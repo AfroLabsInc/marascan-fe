@@ -33,11 +33,12 @@
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "autoprefixer": "^10.4.2",
+    "commitizen": "^4.2.5",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^8.5.0",
     "prettier": "^2.5.1",
-    "commitizen": "^4.2.5",
+    "quasar-app-extension-vuelidate-rules": "^0.5.1",
     "typescript": "^4.5.4"
   },
   "engines": {
