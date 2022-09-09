@@ -80,7 +80,7 @@
               </div>
             </div>
             <div class="row justify-between items-center q-mb-md">
-              <q-checkbox class="text-grey-8" v-model="remember"
+              <q-checkbox class="text-grey-9" color="black" v-model="remember"
                 >Accept Terms and Conditions</q-checkbox
               >
               <!-- <a href="#" class="forget-btn text-para-default"
@@ -91,6 +91,7 @@
             <div class="row">
               <q-btn
                 unelevated
+                text-color="black"
                 class="full-width"
                 color="primary"
                 label="Sign up"

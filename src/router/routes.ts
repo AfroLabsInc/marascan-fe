@@ -10,6 +10,10 @@ const routes: RouteRecordRaw[] = [
         path: 'donor/create-account',
         component: () => import('pages/CreateAccount.vue'),
       },
+      {
+        path: 'donor/login',
+        component: () => import('src/pages/LogIn.vue'),
+      },
     ],
   },
 
