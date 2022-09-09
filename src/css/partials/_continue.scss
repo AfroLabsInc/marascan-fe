@@ -1,0 +1,36 @@
+.continue {
+  .continue-div {
+    width: 100%;
+    margin-top: -100px;
+  }
+
+  .continue-card {
+    // padding: 50px 10px;
+    margin: 10px;
+    width: 320.5px;
+    height: 207px;
+    text-align: center;
+    cursor: pointer;
+    .text-h6 {
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 15px;
+    }
+    &:hover {
+      border: 1px solid rgba(128, 128, 128, 0.358);
+    }
+  }
+  .continue-btn {
+    min-width: 500px;
+    .q-btn__content {
+      color: #020202;
+    }
+  }
+  @media only screen and (max-width: 680px) {
+    .continue-btn {
+      min-width: 200px;
+    }
+  }
+}
