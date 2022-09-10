@@ -14,6 +14,18 @@ const routes: RouteRecordRaw[] = [
         path: 'donor/login',
         component: () => import('src/pages/LogIn.vue'),
       },
+      {
+        path: 'donor/dashboard',
+        component: () => import('src/pages/Dashboard/DashboardLayout.vue'),
+        name: 'dashboard-donor',
+        children: [
+          {
+            path: '',
+            name: 'dashboard-donor-home',
+            component: () => import('src/pages/Dashboard/Home.vue'),
+          },
+        ],
+      },
     ],
   },
 

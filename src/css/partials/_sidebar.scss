@@ -1,0 +1,23 @@
+.side-bar {
+  // padding: 20px;
+  background: #ffffff;
+  &-logo {
+    padding: 14px 30px;
+  }
+  .item-class {
+    padding: 18px;
+    margin: 18px;
+    color: #000;
+  }
+  .exact-active-class {
+    background: #e8e8e8;
+    margin: 18px;
+    padding: 18px;
+    border-radius: 50px;
+  }
+}
+.container {
+  .stats-summary {
+    border-radius: 10px;
+  }
+}

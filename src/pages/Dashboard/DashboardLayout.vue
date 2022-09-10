@@ -1,10 +1,10 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <div class="nav-bar" v-if="route.name === 'dashboard-donor'">
+  <q-layout view="lhh lpR lFf">
+    <div class="nav-bar">
       <q-toolbar>
         <q-toolbar-title class="q-ml-md">
           <q-img
-            src="../assets/logo.svg"
+            src="../../assets/logo.svg"
             spinner-color="primary"
             style="width: 71.5px; height: 39.85px"
             spinner-size="82px"
@@ -12,6 +12,9 @@
         </q-toolbar-title>
       </q-toolbar>
     </div>
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+      <side-bar></side-bar>
+    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -19,19 +22,14 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRoute } from 'vue-router';
-export default defineComponent({
-  name: 'MainLayout',
+<script>
+import SideBar from 'src/components/SideBar.vue';
 
+export default {
+  name: 'DashboardLayout',
   setup() {
-    const route = useRoute();
-    const leftDrawerOpen = ref(false);
-
-    return {
-      route,
-    };
+    return {};
   },
-});
+  components: { SideBar },
+};
 </script>
