@@ -30,9 +30,9 @@
         v-ripple
       >
         <q-item-section avatar>
-          <q-icon name="home" />
+          <q-icon name="dashboard" />
         </q-item-section>
-        <q-item-section>Dashboards</q-item-section>
+        <q-item-section>Dashboard</q-item-section>
       </q-item>
 
       <q-item
@@ -42,9 +42,9 @@
         v-ripple
       >
         <q-item-section avatar>
-          <q-icon name="home" />
+          <q-icon name="travel_explore" />
         </q-item-section>
-        <q-item-section>Dashboards</q-item-section>
+        <q-item-section>MaraScan</q-item-section>
       </q-item>
     </q-list>
   </div>
