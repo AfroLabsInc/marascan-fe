@@ -17,6 +17,7 @@
             color="primary"
             no-caps
             class="donate-btn q-mr-xs"
+            @click="dialogCard.open()"
           />
         </q-toolbar>
       </div>
@@ -31,17 +32,22 @@
       </div>
       <q-list>
         <q-item class="cursor-pointer">
-          <q-item-section>Icon as avatar</q-item-section>
+          <q-item-section side class="text-caption">12:20 AM</q-item-section>
+          <q-item-section class="text-caption text-grey-8"
+            >Logged In</q-item-section
+          >
         </q-item>
       </q-list>
     </q-drawer>
     <q-page-container>
       <router-view />
     </q-page-container>
+    <wallet-connect ref="dialogCard"></wallet-connect>
   </q-layout>
 </template>
 
 <script>
+import WalletConnect from 'src/components/WalletConnect.vue';
 import SideBar from 'src/components/SideBar.vue';
 import { ref } from 'vue';
 export default {
@@ -49,9 +55,10 @@ export default {
   setup() {
     const leftDrawerOpen = ref(true);
     const rightDrawerOpen = ref(true);
-
+    const dialogCard = ref(null);
     return {
       leftDrawerOpen,
+      dialogCard,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
@@ -62,6 +69,6 @@ export default {
       },
     };
   },
-  components: { SideBar },
+  components: { SideBar, WalletConnect },
 };
 </script>

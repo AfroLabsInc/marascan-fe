@@ -10,7 +10,7 @@
     </div>
     <q-space />
     <q-list padding class="q-ma-lg q-col-gutter-lg">
-      <q-item
+      <!-- <q-item
         clickable
         class="item-class rounded-borders"
         exact-active-class="exact-active-class"
@@ -20,7 +20,7 @@
           <q-icon name="home" />
         </q-item-section>
         <q-item-section>Home</q-item-section>
-      </q-item>
+      </q-item> -->
 
       <q-item
         clickable

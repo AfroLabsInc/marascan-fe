@@ -5,7 +5,7 @@
         <div class="col-12 col-md-4 col-lg-4">
           <q-card class="stats-summary bg-black rounded-borders" flat>
             <q-card-section>
-              <div class="text-h6 text-grey-5">Your Donations</div>
+              <div class="text-h6 text-grey-5">My Donations</div>
             </q-card-section>
             <q-card-section>
               <div class="text-h3 text-weight-bolder text-white">$0</div>
@@ -91,6 +91,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+
+// import { WalletConnect } from 'src/scripts/utils/walletUtil';
 export default defineComponent({
   name: 'DonorHome',
 });
