@@ -16,8 +16,21 @@
     border-radius: 50px;
   }
 }
-.container {
+.container,
+.nav-bar {
   .stats-summary {
     border-radius: 10px;
   }
+  .donate-btn {
+    .q-btn__content {
+      padding: 6px 30px;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 14px;
+      color: #020202;
+    }
+  }
+}
+.container {
+  height: 100vh;
 }
