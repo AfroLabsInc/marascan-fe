@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import WalletConnect from 'src/components/WalletConnect.vue';
+import WalletConnect from 'src/components/DonateDialog.vue';
 import SideBar from 'src/components/SideBar.vue';
 import { ref } from 'vue';
 export default {
