@@ -16,22 +16,49 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <connect-wallet
+      :connectCoinbase="ConnectCoinBaseWallet"
+      :connectMetaMask="ConnectMetaMaskWallet"
+      :connectWalletConnect="ConnectWalletConnect"
+    ></connect-wallet>
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-export default defineComponent({
-  name: 'MainLayout',
+import {
+  switchNetwork,
+  connectCoinbase,
+  connectMetaMask,
+  WalletConnect,
+  WalletIsConnected,
+} from 'src/scripts/utils/walletUtil';
+import { useUserStore } from '../stores/user';
+const route = useRoute();
+const leftDrawerOpen = ref(false);
 
-  setup() {
-    const route = useRoute();
-    const leftDrawerOpen = ref(false);
+const $store = useUserStore();
 
-    return {
-      route,
-    };
-  },
-});
+/**
+ * Connect WallectConnect
+ */
+const ConnectWalletConnect = () => WalletConnect($store);
+
+/**
+ * Connect CoinBase Wallet
+ */
+const ConnectCoinBaseWallet = () => connectCoinbase($store);
+
+const LoadWallet = async () => {
+  const res = await WalletIsConnected($store);
+  console.log(res);
+};
+(async () => {
+  await LoadWallet();
+})();
+/**
+ * Connect MetaMask Wallet
+ */
+const ConnectMetaMaskWallet = () => connectMetaMask($store);
 </script>

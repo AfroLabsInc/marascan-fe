@@ -115,8 +115,8 @@
                     color="green"
                     no-caps
                     icon="account_balance_wallet"
-                    label="Connect Wallet "
-                    type="submit"
+                    label="Connect Wallet"
+                    @click="store.openWalletModal = true"
                   />
                 </div>
               </fieldset>
@@ -136,28 +136,17 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { useUserStore } from '../stores/user';
 
-export default defineComponent({
-  name: 'IndexPage',
-
-  setup() {
-    const fname = ref('');
-    const lname = ref('');
-    const remember = ref(false);
-    const isPwd = ref(true);
-    const form = ref({
-      password: '',
-      email: '',
-    });
-    return {
-      fname,
-      lname,
-      remember,
-      isPwd,
-      form,
-    };
-  },
+const store = useUserStore();
+const fname = ref('');
+const lname = ref('');
+const remember = ref(false);
+const isPwd = ref(true);
+const form = ref({
+  password: '',
+  email: '',
 });
 </script>
