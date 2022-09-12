@@ -17,29 +17,11 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="crypto">
-          <div class="text-h6 text-grey">Connect Crypto Wallet</div>
-          <div>
-            <q-list>
-              <q-item clickable class="q-my-lg q-py-lg rounded-borders">
-                <q-item-section avatar>
-                  <q-icon size="lg" name="img:img/coinbase.png" />
-                </q-item-section>
-                <q-item-section>CoinBase</q-item-section>
-              </q-item>
-              <q-item clickable class="q-my-lg q-py-lg">
-                <q-item-section avatar>
-                  <q-icon size="lg" name="img:img/wc.png" />
-                </q-item-section>
-                <q-item-section>Wallet Connect</q-item-section>
-              </q-item>
-              <q-item clickable class="q-my-lg q-py-lg">
-                <q-item-section avatar>
-                  <q-icon size="lg" name="img:img/metamask.png" />
-                </q-item-section>
-                <q-item-section>MetaMask</q-item-section>
-              </q-item>
-            </q-list>
-          </div>
+          <wallet-dialogue
+            :connectCoinbase="ConnectCoinBaseWallet"
+            :connectMetaMask="ConnectMetaMaskWallet"
+            :connectWalletConnect="ConnectWalletConnect"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="card">
@@ -51,6 +33,7 @@
               spinner-color="primary"
               spinner-size="82px"
             />
+            <q-space />
             <q-img
               src="/img/mastercard logo.png"
               class="cards-accepted"
@@ -69,6 +52,7 @@
               class="card-input"
               style=""
             />
+
             <!-- <span class="fs-20">USD</span> -->
           </div>
           <div class="row q-col-gutter-md">
@@ -101,7 +85,7 @@
                 :rules="[$rules.required('Provide your card numbers')]"
               />
             </div>
-            <div class="col-12 col-md-8 col-lg-8">
+            <div class="col-12 col-md-8 col-lg-8 col-sm-8">
               <label class="fs-13 q-mb-lg" for="lname">Expiry Date</label>
 
               <q-input
@@ -115,7 +99,7 @@
                 :rules="[$rules.required('Provide card expiry date')]"
               />
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
+            <div class="col-12 col-md-4 col-lg-4 col-sm-4">
               <label class="fs-13 q-mb-lg" for="lname">CVV</label>
               <q-input
                 id="lname"
@@ -154,29 +138,69 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import {
+  switchNetwork,
+  connectCoinbase,
+  connectMetaMask,
+  WalletConnect,
+  WalletIsConnected,
+} from 'src/scripts/utils/walletUtil';
+import { useUserStore } from '../stores/user';
 export default defineComponent({
   name: 'WalletConnect',
-  data() {
+  setup() {
+    const $store = useUserStore();
+
+    /**
+     * Connect WallectConnect
+     */
+    const ConnectWalletConnect = () => WalletConnect($store);
+
+    /**
+     * Connect CoinBase Wallet
+     */
+    const ConnectCoinBaseWallet = () => connectCoinbase($store);
+
+    const LoadWallet = async () => {
+      const res = await WalletIsConnected($store);
+      console.log(res);
+    };
+    (async () => {
+      await LoadWallet();
+    })();
+    /**
+     * Connect MetaMask Wallet
+     */
+    const ConnectMetaMaskWallet = () => connectMetaMask($store);
+
+    const isOpened = ref(true);
+    const tab = ref('crypto');
+    const currencyCard = ref('USD');
+    const amountCard = ref(0.0);
+    const currencyOptions = ref(['USD']);
+    const rememberCard = ref(true);
+    const card = ref({
+      cvv: '',
+      cardNumber: '',
+      cardHolder: '',
+      expiry_date: '',
+    });
     return {
-      isOpened: true,
-      tab: 'crypto',
-      currencyCard: 'USD',
-      amountCard: 0.0,
-      currencyOptions: ['USD'],
-      rememberCard: true,
-      card: {
-        cvv: '',
-        cardNumber: '',
-        cardHolder: '',
-        expiry_date: '',
+      isOpened,
+      tab,
+      currencyCard,
+      amountCard,
+      currencyOptions,
+      rememberCard,
+      card,
+      ConnectWalletConnect,
+      ConnectCoinBaseWallet,
+      ConnectMetaMaskWallet,
+      open() {
+        isOpened.value = true;
       },
     };
-  },
-  methods: {
-    open() {
-      this.isOpened = true;
-    },
   },
 });
 </script>

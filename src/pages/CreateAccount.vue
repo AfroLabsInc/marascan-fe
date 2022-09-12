@@ -94,9 +94,32 @@
                 text-color="black"
                 class="full-width"
                 color="primary"
+                no-caps
                 label="Sign up"
                 type="submit"
               />
+            </div>
+
+            <div class="text-center q-py-lg">
+              <fieldset class="rounded-borders">
+                <legend>
+                  <span class="text-center q-mx-md">
+                    or continue with wallet
+                  </span>
+                </legend>
+                <div class="row justify-center">
+                  <q-btn
+                    unelevated
+                    text-color="white"
+                    class=""
+                    color="green"
+                    no-caps
+                    icon="account_balance_wallet"
+                    label="Connect Wallet "
+                    type="submit"
+                  />
+                </div>
+              </fieldset>
             </div>
           </q-card-section>
         </q-card>
