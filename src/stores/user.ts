@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
 import { userStore } from '../scripts/types/storeTypes';
+
 // import obj2fd from "obj2fd"
 export const useUserStore = defineStore('user', {
   state: (): userStore => ({
@@ -50,47 +51,31 @@ export const useUserStore = defineStore('user', {
       }
       return '';
     },
-    async createGateItem(payload: object): Promise<void> {
-      await axios
-        .post('/items', payload)
-        .then((response) => {
-          console.log(response);
-          this.gatedResponseData = response.data;
-          this.gatedResponseStatus = response.status;
-        })
-        .catch((err) => {
-          console.log(err.response);
-          this.gatedResponseStatus = err.response.status;
-          return err.status;
-        });
-    },
-    async getGateItem(slug: string): Promise<void> {
-      await axios
-        .get(`/items/${slug}`)
-        .then((response) => {
-          console.log(response);
-          this.gateItem = response.data;
-          this.gatedResponseStatus = response.status;
-        })
-        .catch((err) => {
-          console.log(err.response);
-          this.gatedResponseStatus = err.response.status;
-          return err.status;
-        });
-    },
-    async getCreator(address: string): Promise<void> {
-      await axios
-        .get(`/creators/${address}`)
-        .then((response) => {
-          console.log(response);
-          this.gatedResponseStatus = response.status;
-          this.creator = response.data;
-        })
-        .catch((err) => {
-          console.log(err.response);
-          this.gatedResponseStatus = err.response.status;
-          return err.status;
-        });
+
+    async registerDonor(payload: {
+      email: string;
+      password: string;
+      donorType: string;
+    }): Promise<void> {
+      console.log('Register');
+      try {
+        console.log('submission');
+        const formData = new FormData();
+        formData.append('email', payload.email);
+        formData.append('password', payload.password);
+        formData.append('donorType', payload.donorType);
+        await axios
+          .post('/auth/donors/register', formData)
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+            console.log(err);
+          });
+      } catch (error: any) {
+        console.log(error.response.data);
+      }
     },
   },
 });

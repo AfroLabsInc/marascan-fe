@@ -2,38 +2,13 @@
   <q-page class="create-account row items-center justify-evenly">
     <!-- <div> -->
     <div class="col-12 col-lg-6 col-md-6 side-form">
-      <q-form @submit="onSubmit" class="q-gutter-md">
+      <q-form @submit="register" class="q-gutter-md">
         <q-card class="field-section" flat>
           <q-card-section>
             <h4>Create An Account</h4>
             <div class="row q-col-gutter-md">
               <!-- email -->
-              <div class="col-12 col-md-6 col-lg-6">
-                <label class="text-subtitle2 q-mb-sm" for="fname"
-                  >First name</label
-                >
-                <q-input
-                  id="fname"
-                  outlined
-                  v-model="fname"
-                  ref="name"
-                  lazy-rules
-                  :rules="[$rules.required('Please enter your First name')]"
-                />
-              </div>
-              <div class="col-12 col-md-6 col-lg-6">
-                <label class="text-subtitle2 q-mb-sm" for="lname"
-                  >Last name</label
-                >
-                <q-input
-                  id="lname"
-                  outlined
-                  v-model="lname"
-                  ref="name"
-                  lazy-rules
-                  :rules="[$rules.required('Please enter your Last name')]"
-                />
-              </div>
+
               <div class="col-12 col-md-12 col-lg-12">
                 <label class="text-subtitle2 q-mb-sm" for="fname"
                   >Email address</label
@@ -51,7 +26,7 @@
               </div>
 
               <!--password-->
-              <div class="col-12 col-md-12 col-lg-12">
+              <div class="col-12">
                 <label class="text-subtitle2 q-mb-sm" for="fname"
                   >Password</label
                 >
@@ -78,9 +53,37 @@
                   </template>
                 </q-input>
               </div>
+              <div class="col-12">
+                <label class="text-subtitle2 q-mb-sm" for="fname"
+                  >Confirm Password</label
+                >
+                <q-input
+                  outlined
+                  v-model="form.confirm_password"
+                  ref="password"
+                  :type="isPwd ? 'password' : 'text'"
+                  lazy-rules
+                  :rules="[
+                    $rules.required('Please enter your password'),
+                    $rules.sameAs(form.password, 'Passwords don\'t match'),
+                  ]"
+                >
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
+              </div>
             </div>
             <div class="row justify-between items-center q-mb-md">
-              <q-checkbox class="text-grey-9" color="black" v-model="remember"
+              <q-checkbox
+                :rules="[$rules.is(true, 'Please accept the license')]"
+                class="text-grey-9"
+                color="black"
+                v-model="remember"
                 >Accept Terms and Conditions</q-checkbox
               >
               <!-- <a href="#" class="forget-btn text-para-default"
@@ -138,15 +141,27 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useUserStore } from '../stores/user';
 
+import { useUserStore } from '../stores/user';
+import { useRoute } from 'vue-router';
+const route = useRoute();
 const store = useUserStore();
-const fname = ref('');
-const lname = ref('');
 const remember = ref(false);
+const submitting = ref(false);
 const isPwd = ref(true);
 const form = ref({
   password: '',
+  confirm_password: '',
   email: '',
 });
+async function register() {
+  const { email, password } = form.value;
+  submitting.value = false;
+  await store.registerDonor({
+    email,
+    password,
+    donorType: (route.params.donorType as string).toLowerCase(),
+  });
+  submitting.value = true;
+}
 </script>
