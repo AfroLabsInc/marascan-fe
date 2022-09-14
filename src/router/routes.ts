@@ -12,9 +12,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/CreateAccount.vue'),
       },
       {
+        path: 'donor/complete-profile/',
+        name: 'complete-profile',
+        component: () => import('pages/CreateProfile.vue'),
+      },
+      {
         path: 'donor/login',
         component: () => import('src/pages/LogIn.vue'),
       },
+
+      // dashboard routes
       {
         path: 'donor/dashboard',
         component: () => import('src/pages/Dashboard/DashboardLayout.vue'),

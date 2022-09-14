@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Signer } from 'ethers';
 import { Provider } from '@ethersproject/abstract-provider';
-import { gatedResponseData } from './types';
 export interface userStore {
   openWalletModal: boolean;
   chainMismatch: boolean;
+  donorProfile: donorProfile | null;
   walletIsLoading: boolean;
+  donorType: string;
   account: string;
   provider: undefined | Signer | Provider;
   reciept: any;
@@ -15,10 +16,6 @@ export interface userStore {
     state: boolean;
     msg: string;
   };
-  gatedResponseData: gatedResponseData | null;
-  gatedResponseStatus: number;
-  gateItem: gatedResponseData | null;
-  creator: { address: string; meta: null; items: gatedResponseData[] } | null;
 }
 export interface userGettersStore {
   Account: (state: userStore) => string;
@@ -26,3 +23,28 @@ export interface userGettersStore {
   getErrorMessage: (state: userStore) => { state: boolean; msg: string };
   LoadingWalletState: (state: userStore) => boolean;
 }
+
+export interface userActionsStore {
+  createDonorProfile: (payload: donorProfile) => void;
+  walletLogin: (payload: { accountAddress: string }) => void;
+  walletRegister: (payload: {
+    accountAddress: string;
+    donorType: string;
+  }) => void;
+  handleLogin: () => void;
+}
+export interface authStore {
+  token: string;
+  donor: any;
+}
+
+export type donorProfile = {
+  firstName: string;
+  lastName: string;
+  occupation: string;
+  address: string;
+  email: string;
+  country: string;
+  region: string;
+  [key: string]: string;
+};

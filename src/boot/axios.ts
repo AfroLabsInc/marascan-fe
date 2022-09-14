@@ -1,6 +1,7 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
-
+import { Cookies } from 'quasar';
+import { Buffer } from 'buffer';
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
@@ -13,7 +14,14 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-console.log('JOHN');
+const userToken = Cookies.get(
+  Buffer.from(process.env.TOKEN_SALT as string).toString('base64')
+);
+// console.log(userToken)
+if (userToken) {
+  // eslint-disable-next-line dot-notation
+  axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+}
 const api = axios.create({ baseURL: '' });
 axios.defaults.baseURL = process.env.BASE_URL;
 export default boot(({ app }) => {

@@ -99,6 +99,7 @@
                 color="primary"
                 no-caps
                 label="Sign up"
+                :loading="submitting"
                 type="submit"
               />
             </div>
@@ -141,11 +142,24 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-
+import { useQuasar, QSpinnerGears } from 'quasar';
+import { onBeforeUnmount } from 'vue';
 import { useUserStore } from '../stores/user';
-import { useRoute } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
+import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
+const router = useRouter();
 const store = useUserStore();
+const auth = useAuthStore();
+const $q = useQuasar();
+let timer: any;
+
+onBeforeUnmount(() => {
+  if (timer !== void 0) {
+    clearTimeout(timer);
+    $q.loading.hide();
+  }
+});
 const remember = ref(false);
 const submitting = ref(false);
 const isPwd = ref(true);
@@ -154,14 +168,43 @@ const form = ref({
   confirm_password: '',
   email: '',
 });
+
+// register Donor
 async function register() {
   const { email, password } = form.value;
-  submitting.value = false;
-  await store.registerDonor({
-    email,
-    password,
-    donorType: (route.params.donorType as string).toLowerCase(),
-  });
   submitting.value = true;
+  await auth
+    .registerDonor({
+      email,
+      password,
+      donorType: (route.params.donorType as string).toLowerCase(),
+    })
+    .then(() => {
+      showLoading();
+    });
+
+  submitting.value = false;
+}
+function showLoading() {
+  $q.loading.show({
+    message:
+      'Creating Account in progress.<br/><span class="text-orange text-weight-bold"> Hang on...</span>',
+    html: true,
+  });
+
+  timer = setTimeout(() => {
+    $q.loading.show({
+      spinner: QSpinnerGears,
+      spinnerColor: 'blue',
+      message: 'Logging in...',
+      messageColor: 'black',
+    });
+
+    timer = setTimeout(() => {
+      $q.loading.hide();
+      timer = void 0;
+      router.push('/donor/complete-profile');
+    }, 2000);
+  }, 3000);
 }
 </script>

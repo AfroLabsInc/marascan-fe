@@ -42,11 +42,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useUserStore } from '../stores/user';
+const store = useUserStore();
 const route = useRoute();
 const donorTypes = ref(['Organization', 'Individual']);
 const selectedType = ref('');
 function selectType(type: string) {
   selectedType.value = type;
+  store.donorType = type;
 }
 </script>
 <style>

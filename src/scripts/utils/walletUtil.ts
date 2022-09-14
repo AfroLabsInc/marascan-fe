@@ -1,4 +1,8 @@
-import { userStore, userGettersStore } from '../types/storeTypes';
+import {
+  userStore,
+  userGettersStore,
+  userActionsStore,
+} from '../types/storeTypes';
 // import Web3 from 'web3';
 // import { providers } from 'ethers'
 
@@ -39,7 +43,7 @@ const Wallet: { provider: any | MetaMaskInpageProvider } = {
  * Restore existing Wallet Connection (Metamask)
  */
 const checkIfWalletIsConnected = async (
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) => {
   const isMetaMask = await isMetamaskConnected($store);
 
@@ -63,7 +67,7 @@ const checkIfWalletIsConnected = async (
 };
 
 const WalletIsConnected = async (
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) => {
   setTimeout(() => {
     $store.walletIsLoading = false;
@@ -78,7 +82,7 @@ const WalletIsConnected = async (
  * @returns
  */
 const isMetamaskConnected = async (
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) => {
   try {
     const metaMaskProvider = MetaMaskProvider();
@@ -133,7 +137,7 @@ const isMetamaskConnected = async (
  * @returns
  */
 const isCoinBaseConnected = async (
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) => {
   try {
     const coinBaseProvider = CoinBaseProvider();
@@ -188,7 +192,7 @@ const isCoinBaseConnected = async (
  * @returns
  */
 const isWallectConnectConnected = async (
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) => {
   try {
     if (Wallet.provider === null) {
@@ -250,7 +254,7 @@ const isWallectConnectConnected = async (
   }
 };
 const switchAccount = async (
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) => {
   if (await isMetamaskConnected($store)) {
     const metaMaskProvider = MetaMaskProvider();
@@ -313,7 +317,7 @@ const switchNetwork = async () => {
  * @returns
  */
 async function connectCoinbase(
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) {
   const coinBaseProvider = CoinBaseProvider();
   console.log(coinBaseProvider);
@@ -344,6 +348,7 @@ async function connectCoinbase(
       // console.log(res)
       $store.account = accounts[0];
 
+      $store.handleLogin();
       coinBaseProvider.on('disconnect', function () {
         console.log('disconnected');
       });
@@ -363,7 +368,7 @@ async function connectCoinbase(
  * @returns
  */
 async function connectMetaMask(
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) {
   const metaMaskProvider = MetaMaskProvider();
   if (metaMaskProvider) {
@@ -392,6 +397,9 @@ async function connectMetaMask(
       // const res = await verifyWalletisOG(metaMaskProvider, accounts[0]);
       // console.log(res)
       $store.account = accounts[0];
+      // login
+
+      $store.handleLogin();
 
       metaMaskProvider.on('disconnect', function () {
         console.log('disconnected');
@@ -425,7 +433,7 @@ async function connectMetaMask(
 //  * @returns
 //  */
 async function WalletConnect(
-  $store: Store<'user', userStore, userGettersStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>
 ) {
   try {
     const provider = new WalletConnectProvider({
@@ -471,12 +479,15 @@ async function WalletConnect(
     //  Get Accounts
 
     const accounts = provider.accounts;
+
     // console.log(chain_id);
     Wallet.provider = provider;
     if (accounts.length !== 0) {
       console.log(accounts[0]);
       $store.provider = Wallet.provider;
       $store.account = accounts[0];
+
+      $store.handleLogin();
       $store.openWalletModal = false;
       return true;
     }
