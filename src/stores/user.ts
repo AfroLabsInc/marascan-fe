@@ -1,9 +1,20 @@
 import axios from 'axios';
-import { defineStore } from 'pinia';
-import { donorProfile, userStore } from '../scripts/types/storeTypes';
+import { defineStore, StoreDefinition } from 'pinia';
+import {
+  donorProfile,
+  userStore,
+  userGettersStore,
+  userActionsStore,
+} from '../scripts/types/storeTypes';
 import { useAuthStore } from './auth';
+import { useRouter } from 'vue-router';
 // import obj2fd from "obj2fd"
-export const useUserStore = defineStore('user', {
+export const useUserStore: StoreDefinition<
+  'user',
+  userStore,
+  userGettersStore,
+  userActionsStore
+> = defineStore('user', {
   state: (): userStore => ({
     openWalletModal: false,
     donorProfile: null,
@@ -37,7 +48,7 @@ export const useUserStore = defineStore('user', {
     LoadingWalletState(state: userStore): boolean {
       return state.walletIsLoading;
     },
-    walletModal(state): boolean {
+    walletModal(state: userStore): boolean {
       return state.openWalletModal;
     },
   },
@@ -140,6 +151,13 @@ export const useUserStore = defineStore('user', {
               axios.defaults.headers.common[
                 'Authorization'
               ] = `Bearer ${token}`;
+
+              // if (donor.) {
+
+              // }
+              const router = useRouter();
+
+              // router.push()
             }
             // if (response.status === 422) {
             //   await this.walletLogin({
@@ -155,8 +173,8 @@ export const useUserStore = defineStore('user', {
         console.log(error.response.data);
       }
     },
-    async handleLogin(payload: { accountAddress: string }): Promise<void> {
-      await this.walletLogin(payload);
+    async handleLogin(): Promise<void> {
+      await this.walletLogin({ accountAddress: this.account });
     },
   },
 });

@@ -25,13 +25,14 @@ export interface userGettersStore {
 }
 
 export interface userActionsStore {
-  createDonorProfile: (payload: donorProfile) => void;
-  walletLogin: (payload: { accountAddress: string }) => void;
-  walletRegister: (payload: {
+  formatAddress(address: string): string;
+  createDonorProfile(payload: donorProfile): Promise<void>;
+  walletLogin(payload: { accountAddress: string }): Promise<void>;
+  walletRegister(payload: {
     accountAddress: string;
     donorType: string;
-  }) => void;
-  handleLogin: () => void;
+  }): Promise<void>;
+  handleLogin(): Promise<void>;
 }
 export interface authStore {
   token: string;

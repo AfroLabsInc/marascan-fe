@@ -124,9 +124,9 @@ const processLogin = async () => {
       password,
     })
     .then(() => {
-      if (!auth.donor.individualProfile && !auth.donor.organizationProfile) {
-        router.push({ name: 'complete-profile' });
-      }
+      // if (!auth.donor.individualProfile && !auth.donor.organizationProfile) {
+      //   router.push({ name: 'complete-profile' });
+      // }
     });
 
   submitting.value = false;

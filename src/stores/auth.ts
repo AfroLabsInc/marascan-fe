@@ -4,7 +4,6 @@ import { Cookies } from 'quasar';
 import { Buffer } from 'buffer';
 import { authStore } from '../scripts/types/storeTypes';
 
-// use a base64 key to save token
 const userTokenKey = Buffer.from(process.env.TOKEN_SALT!).toString('base64');
 const userKey = Buffer.from(process.env.USER_KEY!).toString('base64');
 const decodeUser = (base64: string) => {
@@ -60,6 +59,7 @@ export const useAuthStore = defineStore('auth', {
       password: string;
     }): Promise<void> {
       try {
+        console.log(11);
         const formData = new FormData();
         formData.append('email', payload.email);
         formData.append('password', payload.password);
@@ -67,13 +67,26 @@ export const useAuthStore = defineStore('auth', {
           .post('/auth/donors/login', formData)
           .then((response) => {
             const { token, donor } = response.data.data;
-
+            console.log(donor);
             // save token to state
             this.AUTH_SUCCESS(token);
             this.AUTH_USER(donor);
             // save token to cookie
-
+            console.log(22);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            // if (!donor.individualProfile && !donor.organizationProfile) {
+
+            if (donor[`${donor.donorType}Profile`] === null) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              this.router.push({ name: 'complete-profile' });
+            } else {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              this.router.push({ name: 'dashboard-donor-home' });
+            }
+
+            // }
           })
           .catch((err) => {
             console.log(err.response.data);
