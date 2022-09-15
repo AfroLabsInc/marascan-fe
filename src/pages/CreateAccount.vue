@@ -152,6 +152,8 @@ const router = useRouter();
 const store = useUserStore();
 const auth = useAuthStore();
 const $q = useQuasar();
+
+store.donorType = route.params.donorType as string;
 let timer: any;
 
 onBeforeUnmount(() => {

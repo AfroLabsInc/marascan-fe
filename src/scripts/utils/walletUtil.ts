@@ -348,12 +348,12 @@ async function connectCoinbase(
       // console.log(res)
       $store.account = accounts[0];
 
-      $store.handleLogin();
       coinBaseProvider.on('disconnect', function () {
         console.log('disconnected');
       });
       $store.provider = coinBaseProvider;
       $store.openWalletModal = false;
+      $store.handleLogin();
       return true;
     }
     return false;
@@ -399,8 +399,6 @@ async function connectMetaMask(
       $store.account = accounts[0];
       // login
 
-      $store.handleLogin();
-
       metaMaskProvider.on('disconnect', function () {
         console.log('disconnected');
       });
@@ -418,6 +416,7 @@ async function connectMetaMask(
 
       //   $router.push('/explore');
       $store.openWalletModal = false;
+      $store.handleLogin();
       return true;
     } else {
       return false;
@@ -487,8 +486,8 @@ async function WalletConnect(
       $store.provider = Wallet.provider;
       $store.account = accounts[0];
 
-      $store.handleLogin();
       $store.openWalletModal = false;
+      $store.handleLogin();
       return true;
     }
     return false;

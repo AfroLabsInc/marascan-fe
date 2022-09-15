@@ -174,7 +174,7 @@ export default defineComponent({
      */
     const ConnectMetaMaskWallet = () => connectMetaMask($store);
 
-    const isOpened = ref(true);
+    const isOpened = ref(false);
     const tab = ref('crypto');
     const currencyCard = ref('USD');
     const amountCard = ref(0.0);

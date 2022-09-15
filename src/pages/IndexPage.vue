@@ -30,7 +30,10 @@
         color="primary"
         :disable="selectedType == ''"
         no-caps
-        :to="{ name: 'create-account', params: { donorType: selectedType } }"
+        :to="{
+          name: 'create-account',
+          params: { donorType: selectedType.toLowerCase() },
+        }"
         class="continue-btn"
         label="Continue"
       />

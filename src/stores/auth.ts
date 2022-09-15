@@ -68,25 +68,13 @@ export const useAuthStore = defineStore('auth', {
           .then((response) => {
             const { token, donor } = response.data.data;
             console.log(donor);
+
+            console.log(22);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
             // save token to state
             this.AUTH_SUCCESS(token);
             this.AUTH_USER(donor);
-            // save token to cookie
-            console.log(22);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            // if (!donor.individualProfile && !donor.organizationProfile) {
-
-            if (donor[`${donor.donorType}Profile`] === null) {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              this.router.push({ name: 'complete-profile' });
-            } else {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              this.router.push({ name: 'dashboard-donor-home' });
-            }
-
-            // }
           })
           .catch((err) => {
             console.log(err.response.data);
@@ -120,6 +108,15 @@ export const useAuthStore = defineStore('auth', {
         sameSite: 'Strict',
         httpOnly: false,
       });
+      if (donor[`${donor.donorType}Profile`] === null) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.router.push({ name: 'complete-profile' });
+      } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.router.push({ name: 'dashboard-donor-home' });
+      }
     },
   },
 });

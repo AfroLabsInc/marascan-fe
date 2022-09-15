@@ -77,7 +77,9 @@ export const useUserStore: StoreDefinition<
           .then((response) => {
             if ((response.status = 201)) {
               this.donorProfile = response.data.data;
-              console.log(this.donorProfile);
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              this.router.push({ name: 'dashboard-donor-home' });
             }
           })
           .catch((err) => {
@@ -97,29 +99,27 @@ export const useUserStore: StoreDefinition<
 
         // send request
         await axios
-          .post('/donors/wallet-login', formData)
+          .post('/auth/donors/wallet-login', formData)
           .then(async (response) => {
             if ((response.status = 201)) {
               const { token, donor } = response.data.data;
 
-              // save token to state
-              auth.AUTH_SUCCESS(token);
-              auth.AUTH_USER(donor);
-
               axios.defaults.headers.common[
                 'Authorization'
               ] = `Bearer ${token}`;
+              // save token to state
+              auth.AUTH_SUCCESS(token);
+              auth.AUTH_USER(donor);
             }
-            if (response.status === 422) {
+          })
+          .catch(async (err) => {
+            if (err.response.status === 422) {
+              console.log('calling register');
               await this.walletRegister({
                 accountAddress: payload.accountAddress,
                 donorType: this.donorType,
               });
             }
-          })
-          .catch((err) => {
-            console.log(err.response.data);
-            console.log(err);
           });
       } catch (error: any) {
         console.log(error.response.data);
@@ -139,23 +139,18 @@ export const useUserStore: StoreDefinition<
 
         // send request
         await axios
-          .post('/donors/wallet-register', formData)
+          .post('/auth/donors/wallet-register', formData)
           .then(async (response) => {
             if ((response.status = 201)) {
               const { token, donor } = response.data.data;
 
               // save token to state
-              auth.AUTH_SUCCESS(token);
-              auth.AUTH_USER(donor);
 
               axios.defaults.headers.common[
                 'Authorization'
               ] = `Bearer ${token}`;
-
-              // if (donor.) {
-
-              // }
-              const router = useRouter();
+              auth.AUTH_SUCCESS(token);
+              auth.AUTH_USER(donor);
 
               // router.push()
             }
