@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { defineStore, StoreDefinition } from 'pinia';
 import {
@@ -7,7 +8,6 @@ import {
   userActionsStore,
 } from '../scripts/types/storeTypes';
 import { useAuthStore } from './auth';
-import { useRouter } from 'vue-router';
 // import obj2fd from "obj2fd"
 export const useUserStore: StoreDefinition<
   'user',

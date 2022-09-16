@@ -64,7 +64,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, defineProps } from 'vue';
 import { useUserStore } from '../stores/user';
 const store = useUserStore();
 const props = defineProps({
@@ -72,12 +71,6 @@ const props = defineProps({
   connectCoinbase: { type: Function, required: true },
   connectWalletConnect: { type: Function, required: true },
 });
-
-const read_more = ref(true);
-
-function toggleReadmore() {
-  read_more.value = !read_more.value;
-}
 </script>
 <style lang="scss">
 .close_button {

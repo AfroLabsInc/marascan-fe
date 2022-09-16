@@ -14,6 +14,7 @@ const inject = require('@rollup/plugin-inject');
 const {
   NodeGlobalsPolyfillPlugin,
 } = require('@esbuild-plugins/node-globals-polyfill');
+const nodePolyfills = require('rollup-plugin-polyfill-node');
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -84,20 +85,29 @@ module.exports = configure(function (/* ctx */) {
         //     },
         //   ],
         // };
-        viteConf.optimizeDeps = {
-          esbuildOptions: {
-            // Node.js global to browser globalThis
-            define: {
-              global: 'globalThis',
-            },
-            // Enable esbuild polyfill plugins
-            plugins: [
-              NodeGlobalsPolyfillPlugin({
-                buffer: true,
-              }),
-            ],
+        (viteConf.build = {
+          ...viteConf.build,
+          rollupOptions: {
+            plugins: [nodePolyfills()],
           },
-        };
+          commonjsOptions: {
+            transformMixedEsModules: true,
+          },
+        }),
+          (viteConf.optimizeDeps = {
+            esbuildOptions: {
+              // Node.js global to browser globalThis
+              define: {
+                global: 'globalThis',
+              },
+              // Enable esbuild polyfill plugins
+              plugins: [
+                NodeGlobalsPolyfillPlugin({
+                  buffer: true,
+                }),
+              ],
+            },
+          });
       },
       // viteVuePluginOptions: {},
 

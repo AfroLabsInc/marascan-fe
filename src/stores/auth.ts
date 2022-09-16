@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { defineStore } from 'pinia';
 import { Cookies } from 'quasar';
 import { Buffer } from 'buffer';
 import { authStore } from '../scripts/types/storeTypes';
 
-const userTokenKey = Buffer.from(process.env.TOKEN_SALT!).toString('base64');
-const userKey = Buffer.from(process.env.USER_KEY!).toString('base64');
+const userTokenKey = Buffer.from(process.env.TOKEN_SALT as string).toString(
+  'base64'
+);
+const userKey = Buffer.from(process.env.USER_KEY as string).toString('base64');
 const decodeUser = (base64: string) => {
   if (!base64) return null;
   return JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
@@ -111,6 +114,7 @@ export const useAuthStore = defineStore('auth', {
       if (donor[`${donor.donorType}Profile`] === null) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+
         this.router.push({ name: 'complete-profile' });
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

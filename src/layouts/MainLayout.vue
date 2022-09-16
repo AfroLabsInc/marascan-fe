@@ -25,10 +25,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import {
-  switchNetwork,
   connectCoinbase,
   connectMetaMask,
   WalletConnect,
@@ -36,7 +34,6 @@ import {
 } from 'src/scripts/utils/walletUtil';
 import { useUserStore } from '../stores/user';
 const route = useRoute();
-const leftDrawerOpen = ref(false);
 
 const $store = useUserStore();
 
