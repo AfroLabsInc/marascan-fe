@@ -86,7 +86,7 @@ module.exports = configure(function (/* ctx */) {
         //   ],
         // };
         (viteConf.build = {
-          ...viteConf.build,
+          // ...viteConf.build,
           rollupOptions: {
             plugins: [nodePolyfills()],
           },
