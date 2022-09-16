@@ -9,5 +9,5 @@ const app = express();
 
 app.use(history());
 
-app.use(serveStatic(path.join(__dirname, '/dist')));
+app.use(serveStatic(path.join(__dirname, '/dist/spa')));
 app.listen(port);
