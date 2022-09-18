@@ -36,6 +36,7 @@
                 style="width: 300px"
                 unelevated
                 no-caps
+                @click="cryptoDonation"
                 label="Switch Account"
               />
             </div>
@@ -61,7 +62,9 @@
               text-color="black"
               class="full-width"
               color="primary"
+              @click="cryptoDonation"
               label="Donate"
+              :loading="loadingCryptoDonation"
               type="submit"
             />
           </div>
@@ -220,6 +223,7 @@ export default defineComponent({
     const ConnectMetaMaskWallet = () => connectMetaMask($store);
 
     const isOpened = ref(false);
+    const loadingCryptoDonation = ref(false);
     const tab = ref('crypto');
     const currencyCard = ref('USD');
     const amountCard = ref(0.0);
@@ -240,10 +244,25 @@ export default defineComponent({
           '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'
         )
       );
-      await ms.makeDonation();
+      await ms.makeDonation(BigNumber.from(1000000 * amountUSDT.value));
     };
     const account = computed(() => $store.account);
     const accountFormated = computed(() => $store.AccountFormated);
+    const cryptoDonation = async () => {
+      loadingCryptoDonation.value = true;
+      const ms = new MaraScan($store);
+      console.log(
+        await ms.approveContract(
+          BigNumber.from(1000000 * amountUSDT.value),
+          '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'
+        )
+      );
+
+      setTimeout(async () => {
+        await ms.makeDonation(BigNumber.from(1000000 * amountUSDT.value));
+        loadingCryptoDonation.value = false;
+      }, 20000);
+    };
     return {
       account,
       isOpened,
@@ -255,7 +274,9 @@ export default defineComponent({
       rememberCard,
       amountUSDT,
       donateCrypto,
+      cryptoDonation,
       card,
+      loadingCryptoDonation,
       ConnectWalletConnect,
       ConnectCoinBaseWallet,
       ConnectMetaMaskWallet,
