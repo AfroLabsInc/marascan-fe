@@ -32,6 +32,8 @@ export interface userActionsStore {
     accountAddress: string;
     donorType: string;
   }): Promise<void>;
+  getDonorProfileByWallet(accountAddress: string): Promise<void>;
+  getDonorProfileById(id: string): Promise<void>;
   handleLogin(): Promise<void>;
 }
 export interface authStore {
@@ -48,4 +50,99 @@ export type donorProfile = {
   country: string;
   region: string;
   [key: string]: string;
+};
+
+export type cardPayload = {
+  billingDetails: {
+    name: string;
+    city: string;
+    country: string;
+    line1: string;
+    line2: string;
+    district: string;
+    postalCode: string;
+  };
+  metadata: {
+    email: string;
+    phoneNumber: string;
+    sessionId: string;
+    ipAddress: string;
+  };
+  idempotencyKey: string;
+  keyId: string;
+  encryptedData: string;
+  expMonth: number;
+  expYear: number;
+};
+
+export type DonationRequest = {
+  paymentMethod: 'fiat' | 'crypto';
+  categoryIds: number[];
+  amount: {
+    currency: string;
+    amount: number;
+  };
+  note: string;
+  donorId: number;
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+};
+
+export type DonationRequestPayload = {
+  paymentMethod: string;
+  categoryIds: number[];
+  amount: {
+    currency: string;
+    amount: number;
+  };
+  note: string;
+};
+export interface PaymentStoreState {
+  currentDonationRequest: null | DonationRequest;
+  currentCard: Card | undefined;
+  allCard: Card[] | [];
+  isAddingCard: boolean;
+  cardDonationStatus: any;
+  allDonationRequest: DonationRequest[] | [];
+}
+export type Card = {
+  id: string;
+  status: string;
+  last4: string;
+  billingDetails: {
+    name: string;
+    line1: string;
+    line2: string;
+    city: string;
+    postalCode: string;
+    district: string;
+    country: string;
+  };
+  expMonth: number;
+  expYear: number;
+  network: string;
+  bin: string;
+  issuerCountry: string;
+  fundingType: string;
+  fingerprint: string;
+  verification: {
+    cvv: string | any;
+    avs: string | any;
+  };
+  createDate: string;
+  metadata: {
+    phoneNumber: string;
+    email: string;
+  };
+  updateDate: string;
+};
+
+export type PaymentPayload = {
+  circleCardId: string;
+  ipAddress: string;
+  sessionId: string;
+  idempotencyKey: string;
+  keyId: string;
+  verification: string;
 };

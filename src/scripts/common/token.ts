@@ -1,5 +1,5 @@
-import { Wallet, providers, Contract, utils } from "ethers";
-import abi  from "../abi/erc20.json";
+import { Wallet, providers, Contract, utils } from 'ethers';
+import abi from '../abi/erc20.json';
 
 export default class Cowry {
   wallet: Wallet;
@@ -8,7 +8,7 @@ export default class Cowry {
   }
   async initializeSinger(): Promise<Wallet> {
     const provider = new providers.AlchemyProvider(
-      "rinkeby",
+      'rinkeby',
       process.env.ALCHEMY as string
     );
     const signer = await this.wallet.connect(provider);
@@ -25,7 +25,14 @@ export default class Cowry {
       address,
       utils.parseEther(amount.toString())
     );
-    await tx.wait();
+    await wait(6);
     return tx;
   }
+}
+async function wait(sec: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < sec * 1000);
 }

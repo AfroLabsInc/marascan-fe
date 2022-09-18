@@ -18,10 +18,53 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="crypto">
           <wallet-dialogue
+            v-if="!account"
             :connectCoinbase="ConnectCoinBaseWallet"
             :connectMetaMask="ConnectMetaMaskWallet"
             :connectWalletConnect="ConnectWalletConnect"
           />
+          <div v-else>
+            <div class="row justify-center bg-grey-3 q-pa-md rounded-borders">
+              Connected as <span class="q-mx-md"> {{ accountFormated }}</span>
+            </div>
+            <div class="row justify-center bg-grey-3 q-pa-md">
+              <q-btn
+                flat
+                text-color="black"
+                class="text-center"
+                icon-right="sync_alt"
+                style="width: 300px"
+                unelevated
+                no-caps
+                label="Switch Account"
+              />
+            </div>
+            <div class="row justify-center bg-grey-3 q-pa-md">
+              <div class="row items-center justify-evenly">
+                <div class="text-h6">Amount: &nbsp;&nbsp;</div>
+              </div>
+              <div class="row items-center justify-center">
+                <span class="fs-20">$</span
+                ><input
+                  type="number"
+                  v-model="amountUSDT"
+                  class="card-input"
+                  style=""
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <q-btn
+              unelevated
+              text-color="black"
+              class="full-width"
+              color="primary"
+              label="Donate"
+              type="submit"
+            />
+          </div>
         </q-tab-panel>
 
         <q-tab-panel name="card">
@@ -138,7 +181,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import {
   switchNetwork,
   connectCoinbase,
@@ -147,6 +190,8 @@ import {
   WalletIsConnected,
 } from 'src/scripts/utils/walletUtil';
 import { useUserStore } from '../stores/user';
+import MaraScan from '../scripts/utils/contractUtils';
+import { BigNumber } from 'ethers';
 export default defineComponent({
   name: 'WalletConnect',
   setup() {
@@ -178,6 +223,7 @@ export default defineComponent({
     const tab = ref('crypto');
     const currencyCard = ref('USD');
     const amountCard = ref(0.0);
+    const amountUSDT = ref(10);
     const currencyOptions = ref(['USD']);
     const rememberCard = ref(true);
     const card = ref({
@@ -186,13 +232,29 @@ export default defineComponent({
       cardHolder: '',
       expiry_date: '',
     });
+    const donateCrypto = async () => {
+      const ms = new MaraScan($store);
+      console.log(
+        await ms.approveContract(
+          BigNumber.from(100000000000),
+          '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'
+        )
+      );
+      await ms.makeDonation();
+    };
+    const account = computed(() => $store.account);
+    const accountFormated = computed(() => $store.AccountFormated);
     return {
+      account,
       isOpened,
+      accountFormated,
       tab,
       currencyCard,
       amountCard,
       currencyOptions,
       rememberCard,
+      amountUSDT,
+      donateCrypto,
       card,
       ConnectWalletConnect,
       ConnectCoinBaseWallet,

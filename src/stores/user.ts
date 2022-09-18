@@ -90,6 +90,54 @@ export const useUserStore: StoreDefinition<
         console.log(error.response.data);
       }
     },
+
+    async getDonorProfileById(id: string): Promise<void> {
+      try {
+        const auth = useAuthStore();
+        await axios
+          .get(`donors/${id}`)
+          .then((response) => {
+            if ((response.status = 200)) {
+              this.donorProfile = response.data.data;
+              auth.AUTH_USER(response.data.data);
+              this.donorType = response.data.data.donorType;
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              // this.router.push({ name: 'dashboard-donor-home' });
+            }
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+            console.log(err);
+          });
+      } catch (error: any) {
+        console.log(error.response.data);
+      }
+    },
+
+    async getDonorProfileByWallet(accountAddress: string): Promise<void> {
+      try {
+        const auth = useAuthStore();
+        await axios
+          .get(`donors/address/${accountAddress}`)
+          .then((response) => {
+            if ((response.status = 200)) {
+              this.donorProfile = response.data.data;
+              auth.AUTH_USER(response.data.data);
+              this.donorType = response.data.data.donorType;
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              // this.router.push({ name: 'dashboard-donor-home' });
+            }
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+            console.log(err);
+          });
+      } catch (error: any) {
+        console.log(error.response.data);
+      }
+    },
     async walletLogin(payload: { accountAddress: string }): Promise<void> {
       const auth = useAuthStore();
 

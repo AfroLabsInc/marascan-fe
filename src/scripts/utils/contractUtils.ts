@@ -1,101 +1,97 @@
-import { BigNumber, Contract, utils, Wallet, ContractFactory } from 'ethers';
-// import { checkIfWalletIsConnected } from './wallet_util';
-import { userStore, userGettersStore } from '../types/storeTypes';
+import {
+  BigNumber,
+  providers,
+  Contract,
+  utils,
+  Wallet,
+  ContractFactory,
+  Transaction,
+} from 'ethers';
+// import { checkIfWalleMSsConnected } from './wallet_util';
+import {
+  userStore,
+  userGettersStore,
+  userActionsStore,
+} from '../types/storeTypes';
 import { tokenStandard, tokenStandardOptions } from '../types/types';
 import { Store } from 'pinia';
 import abi from '../abi';
+import { checkIfWalletIsConnected } from './walletUtil';
 // import { TransactionResponse } from '@ethersproject/abstract-provider';
-import Provider from '../providers/provider';
-import CreateWallet from '../common/wallet';
-import tI from '../../abi/TokenGate.json';
-
-export default class TokenUtils extends Provider {
-  contractAddress: string;
-  wallet: Wallet;
-  store: Store<'user', userStore, userGettersStore>;
-  token_standard: 'erc20' | 'erc721' | 'erc1155';
+import MS from '../../abi/MaraScan.json';
+export default class MaraScan {
+  // contractAddress: string;
+  store: Store<'user', userStore, userGettersStore, userActionsStore>;
+  // token_standard: 'erc20' | 'erc721' | 'erc1155';
+  provider: any;
   constructor(
-    $store: Store<'user', userStore, userGettersStore>,
-    token_standard: 'erc20' | 'erc721' | 'erc1155',
-    contract_address: string,
-    network: string
+    $store: Store<'user', userStore, userGettersStore, userActionsStore>
+    // token_standard: 'erc20' | 'erc721' | 'erc1155'
+    // contract_address: string
   ) {
-    super(network);
-    this.wallet = CreateWallet.initializeNewWallet();
-    this.contractAddress = contract_address;
-    this.token_standard = token_standard;
+    // this.contractAddress = contract_address;
+    // this.token_standard = token_standard;
     this.store = $store;
   }
-  async initializeSinger(): Promise<Wallet> {
-    return await this.wallet.connect(this.provider);
+
+  async initializeSinger(): Promise<providers.Web3Provider> {
+    this.provider = await checkIfWalletIsConnected(this.store);
+    console.log(this.provider);
+    return new providers.Web3Provider(this.provider);
   }
-  async connectedContract(): Promise<Contract> {
+
+  async tokenContract(contractAddress: string): Promise<Contract> {
     const connectedContract = new Contract(
-      this.contractAddress,
-      abi[this.token_standard],
-      this.provider
+      contractAddress,
+      abi['erc20'],
+      (await this.initializeSinger()).getSigner()
     );
 
     return connectedContract;
   }
 
   // initialize token gate
-  async tokenGateContract(): Promise<Contract> {
+  async maraScanContract(): Promise<Contract> {
     const connectedContract = new ContractFactory(
-      tI.abi,
-      tI.bytecode,
-      await this.initializeSinger()
+      MS.abi,
+      MS.bytecode,
+      (await this.initializeSinger()).getSigner()
     );
-    return connectedContract.attach(this.getProxyAddress());
+    return connectedContract.attach(process.env.MARASCAN as string);
   }
 
   // verify address is valid
   static isValidAddress(address: string): boolean {
     return utils.isAddress(address);
   }
-  async getCode(): Promise<string> {
-    const bytecode = await this.provider.getCode(this.contractAddress);
-    return bytecode;
-  }
-  async getTokenName(): Promise<string> {
-    return ((await this.connectedContract()) as Contract).name();
-  }
-  async getTokenSymbol(): Promise<string> {
-    return ((await this.connectedContract()) as Contract).symbol();
+
+  async approveContract(
+    amount: BigNumber,
+    contractAddress: string
+  ): Promise<any> {
+    const tx = (
+      (await this.tokenContract(contractAddress)) as Contract
+    ).approve(process.env.MARASCAN, amount);
+    await wait(5);
+    return tx;
   }
 
-  async getTokenBalance(): Promise<BigNumber> {
-    return ((await this.connectedContract()) as Contract).balanceOf(
-      this.store.Account
+  async makeDonation(amount: BigNumber): Promise<any> {
+    return ((await this.maraScanContract()) as Contract).donate(
+      '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+      amount,
+      1,
+      ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133'],
+      [1],
+      true
     );
-  }
-  async getTotalSupply(): Promise<BigNumber> {
-    return ((await this.connectedContract()) as Contract).totalSupply();
   }
 }
 
-export const newToken = {
-  blockchain: {
-    network: 'mainnet',
-    name: 'Ethereum',
-    value: 'mainnet',
-    label: 'Ethereum',
-    chainId: 1,
-    currency: 'ETH',
-    rpc: [
-      'https://eth-mainnet.alchemyapi.io/v2/7lR5N50UXB4y8URS4S9J3JPuxHWkW8uH',
-      'https://eth-mainnet.blastapi.io/d3ed394a-bb83-4d1c-bb83-12ff8708c81a',
-      'https://rpc.ankr.com/eth',
-    ],
-    explorer: 'https://etherscan.io',
-    api: 'https://api.etherscan.io/api?module=account&action=tokentx',
-  },
-  token_standard: {
-    label: 'ERC721',
-    value: 'erc721',
-  } as tokenStandardOptions<tokenStandard>,
-  contract_address: '',
-  token_id: '',
-  amount_required: '',
-  token_name: '',
-};
+async function wait(sec: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < sec * 1000);
+}

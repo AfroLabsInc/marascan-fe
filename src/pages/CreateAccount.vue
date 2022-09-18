@@ -3,7 +3,13 @@
     <!-- <div> -->
     <div class="col-12 col-lg-6 col-md-6 side-form">
       <q-form @submit="register" class="q-gutter-md">
-        <q-card class="field-section" flat>
+        <q-card class="field-section">
+          <h6 class="text-center">
+            Already have an account?
+            <router-link to="/donor/login" class="text-decoration-none">
+              Sign in</router-link
+            >
+          </h6>
           <q-card-section>
             <h4>Create An Account</h4>
             <div class="row q-col-gutter-md">
