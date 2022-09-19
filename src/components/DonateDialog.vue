@@ -33,40 +33,99 @@
                 text-color="black"
                 class="text-center"
                 icon-right="sync_alt"
-                style="width: 300px"
+                style="width: 260px"
                 unelevated
                 no-caps
                 @click="cryptoDonation"
                 label="Switch Account"
               />
             </div>
-            <div class="row justify-center bg-grey-3 q-pa-md">
-              <div class="row items-center justify-evenly">
-                <div class="text-h6">Amount: &nbsp;&nbsp;</div>
-              </div>
-              <div class="row items-center justify-center">
-                <span class="fs-20">$</span
-                ><input
+
+            <div class="row q-ma-md">
+              <div
+                class="row justify-between full-width rounded-borders bg-grey-3 q-pa-sm"
+              >
+                <q-input
+                  v-model="amountCrypto"
+                  class="fs-18"
+                  style="min-width: 260px"
                   type="number"
-                  v-model="amountUSDT"
-                  class="card-input"
-                  style=""
+                  standout
+                />
+                <q-select
+                  standout
+                  v-model="selectedToken"
+                  class="q-mx-md"
+                  :options="['ETH', 'USDC', 'USDT', 'APECOIN', 'DAI']"
+                  rounded
                 />
               </div>
             </div>
-          </div>
+            <div class="row q-ma-md">
+              <div
+                class="row justify-center full-width rounded-borders bg-grey-3 q-pa-sm"
+              >
+                <!-- <q-input
+                  v-model="amountCrypto"
+                  class="fs-18"
+                  style="min-width: 260px"
+                  type="number"
+                  standout
+                /> -->
+                <q-select
+                  standout
+                  label="Select a category in MasaiMara"
+                  v-model="selectedCategory"
+                  class="full-width"
+                  :options="['MasaiMara']"
+                />
+                <div
+                  class="row justify-center full-width rounded-borders bg-grey-3 q-pa-sm"
+                >
+                  <!-- <q-input
+                  v-model="amountCrypto"
+                  class="fs-18"
+                  style="min-width: 260px"
+                  type="number"
+                  standout
+                /> -->
+                  <q-select
+                    standout
+                    label="Select a conservancy"
+                    v-model="selectedConservancy"
+                    class="full-width"
+                    :options="['MasaiMara']"
+                  />
+                </div>
+              </div>
+              <div class="row justify-center q-pa-md q-ma-md">
+                <div class="row items-center justify-evenly">
+                  <div class="text-h6">Amount: &nbsp;&nbsp;</div>
+                </div>
+                <div class="row items-center justify-center">
+                  <span class="fs-20">$</span
+                  ><input
+                    type="number"
+                    v-model="amountUSDT"
+                    class="card-input"
+                    style=""
+                  />
+                </div>
+              </div>
+            </div>
 
-          <div class="row">
-            <q-btn
-              unelevated
-              text-color="black"
-              class="full-width"
-              color="primary"
-              @click="cryptoDonation"
-              label="Donate"
-              :loading="loadingCryptoDonation"
-              type="submit"
-            />
+            <div class="row">
+              <q-btn
+                unelevated
+                class="full-width"
+                color="primary"
+                @click="cryptoDonation"
+                label="Approve"
+                :loading="loadingCryptoDonation"
+                type="submit"
+              />
+            </div>
+            <div>Step {{ step }} of 3</div>
           </div>
         </q-tab-panel>
 
@@ -193,12 +252,16 @@ import {
   WalletIsConnected,
 } from 'src/scripts/utils/walletUtil';
 import { useUserStore } from '../stores/user';
+import { useAuthStore } from '../stores/auth';
+import { usePaymentStore } from '../stores/payment';
 import MaraScan from '../scripts/utils/contractUtils';
 import { BigNumber } from 'ethers';
 export default defineComponent({
   name: 'WalletConnect',
   setup() {
     const $store = useUserStore();
+    const payment = usePaymentStore();
+    const auth = useAuthStore();
 
     /**
      * Connect WallectConnect
@@ -225,55 +288,154 @@ export default defineComponent({
     const isOpened = ref(false);
     const loadingCryptoDonation = ref(false);
     const tab = ref('crypto');
+    const selectedToken = ref({
+      value: 'USDC',
+      label: 'USDC',
+      contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+      decimal: 1000000,
+    });
     const currencyCard = ref('USD');
     const amountCard = ref(0.0);
     const amountUSDT = ref(10);
+    const amountCrypto = ref(10);
     const currencyOptions = ref(['USD']);
     const rememberCard = ref(true);
+    const selectedConservancy = ref('MasaiMara');
+    const step = ref(1);
+    const approvedTokens = ref([
+      { value: 'ETH', label: 'ETH', contractAddress: '' },
+      {
+        value: 'USDC',
+        label: 'USDC',
+        contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+        decimal: 1000000,
+      },
+      {
+        value: 'USDT',
+        label: 'USDT',
+        contractAddress: '0x509Ee0d083DdF8AC028f2a56731412edD63223B9',
+        decimal: 1000000,
+      },
+      {
+        value: 'APECOIN',
+        label: 'APECOIN',
+        contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
+        decimal: 1000000000000000000,
+      },
+    ]);
+    const selectedCategory = ref('Land owners');
+
     const card = ref({
       cvv: '',
       cardNumber: '',
       cardHolder: '',
       expiry_date: '',
     });
-    const donateCrypto = async () => {
-      const ms = new MaraScan($store);
-      console.log(
-        await ms.approveContract(
-          BigNumber.from(100000000000),
-          '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'
-        )
-      );
-      await ms.makeDonation(BigNumber.from(1000000 * amountUSDT.value));
-    };
+
     const account = computed(() => $store.account);
+
     const accountFormated = computed(() => $store.AccountFormated);
+
+    const createDonationRequest = async () => {
+      await payment.createDonationRequest({
+        paymentMethod: tab.value,
+        categoryIds: [1],
+        amount: {
+          currency: selectedToken.value.value,
+          amount: amountCrypto.value,
+        },
+        note: '',
+      });
+    };
     const cryptoDonation = async () => {
       loadingCryptoDonation.value = true;
-      const ms = new MaraScan($store);
-      console.log(
-        await ms.approveContract(
-          BigNumber.from(1000000 * amountUSDT.value),
-          '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'
-        )
+      const amount = BigNumber.from(
+        selectedToken.value.decimal * amountCrypto.value
       );
+      console.log(3);
+      await createDonationRequest();
+      const ms = new MaraScan($store);
+      console.log(1);
+      if (selectedToken.value.value == 'ETH') {
+        console.log(2);
+        step.value = 2;
+        await ms.makeDonation(
+          amount,
+          amountCrypto.value,
+          selectedToken.value.contractAddress,
+          $store.account,
+          selectedToken.value.value == 'ETH',
+          payment.currentDonationRequest?.id as number
+        );
+      } else {
+        console.log(1);
+        const allowance: boolean = await ms.checkAllowace(
+          amount,
+          selectedToken.value.contractAddress,
+          $store.account
+        );
+        console.log(allowance);
+        if (allowance) {
+          step.value = 2;
+          await ms.makeDonation(
+            amount,
+            amountCrypto.value,
+            selectedToken.value.contractAddress,
+            $store.account,
+            selectedToken.value.value == 'ETH',
+            payment.currentDonationRequest?.id as number
+          );
+        } else {
+          await ms
+            .approveContract(amount, selectedToken.value.contractAddress)
+            .then(async (res) => {
+              if (res) {
+                step.value = 2;
+                await ms.makeDonation(
+                  amount,
+                  amountCrypto.value,
+                  selectedToken.value.contractAddress,
+                  $store.account,
+                  selectedToken.value.value == 'ETH',
+                  payment.currentDonationRequest?.id as number
+                );
+              }
+            });
+        }
+      }
 
-      setTimeout(async () => {
-        await ms.makeDonation(BigNumber.from(1000000 * amountUSDT.value));
-        loadingCryptoDonation.value = false;
-      }, 20000);
+      // console.log(
+      //   await ms.approveContract(
+      //     BigNumber.from(1000000 * amountUSDT.value),
+      //     '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'
+      //   )
+      // );
+
+      // setTimeout(async () => {
+      //   await ms.makeDonation(
+      //     BigNumber.from(1000000 * amountUSDT.value),
+      //     amountUSDT.value
+      //   );
+      loadingCryptoDonation.value = false;
+      // }, 20000);
     };
+
     return {
       account,
       isOpened,
       accountFormated,
+      approvedTokens,
       tab,
+      step,
       currencyCard,
       amountCard,
       currencyOptions,
       rememberCard,
       amountUSDT,
-      donateCrypto,
+      amountCrypto,
+      selectedConservancy,
+      selectedCategory,
+      selectedToken,
       cryptoDonation,
       card,
       loadingCryptoDonation,
@@ -296,7 +458,7 @@ export default defineComponent({
 <style scoped>
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+  -webkit-appearance: none !important;
   margin: 0;
 }
 .card-input:focus {

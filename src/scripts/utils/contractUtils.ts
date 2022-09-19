@@ -13,12 +13,12 @@ import {
   userGettersStore,
   userActionsStore,
 } from '../types/storeTypes';
-import { tokenStandard, tokenStandardOptions } from '../types/types';
 import { Store } from 'pinia';
 import abi from '../abi';
 import { checkIfWalletIsConnected } from './walletUtil';
 // import { TransactionResponse } from '@ethersproject/abstract-provider';
 import MS from '../../abi/MaraScan.json';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 export default class MaraScan {
   // contractAddress: string;
   store: Store<'user', userStore, userGettersStore, userActionsStore>;
@@ -65,26 +65,81 @@ export default class MaraScan {
     return utils.isAddress(address);
   }
 
+  async checkAllowace(
+    amount: BigNumber,
+    contractAddress: string,
+    addressOwner: string
+  ): Promise<boolean> {
+    const allowance: BigNumber = await (
+      (await this.tokenContract(contractAddress)) as Contract
+    ).allowance(addressOwner, process.env.MARASCAN);
+    console.log(allowance);
+    return amount <= allowance || false;
+  }
   async approveContract(
     amount: BigNumber,
     contractAddress: string
   ): Promise<any> {
-    const tx = (
-      (await this.tokenContract(contractAddress)) as Contract
-    ).approve(process.env.MARASCAN, amount);
-    await wait(5);
-    return tx;
+    const tC = (await this.tokenContract(contractAddress)) as Contract;
+    const tx: TransactionResponse = await tC.approve(
+      process.env.MARASCAN,
+      amount
+    );
+    await tx.wait();
+    return true;
   }
 
-  async makeDonation(amount: BigNumber): Promise<any> {
-    return ((await this.maraScanContract()) as Contract).donate(
-      '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-      amount,
-      1,
-      ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133'],
-      [1],
-      true
-    );
+  async makeDonation(
+    amount: BigNumber,
+    _amountNumber: number,
+    contractAddress: string,
+    donorAddress: string,
+    isETHER: boolean,
+    donationRequestId: number
+  ): Promise<any> {
+    if (isETHER) {
+      // const etherAmount:BigNumber = utils.parseEther(utils.formatEther(_amountNumber))
+      const options = { value: utils.parseEther('${_amountNumber}') };
+      return (
+        (await this.maraScanContract()) as Contract
+      ).SwapExactETHForTokens(
+        1,
+        donationRequestId,
+        [
+          [
+            '0xf7F8DCf8962872421373FF5cf2C4bB06357b7133',
+            '0x0517417c1f98a61c8d3b1df1748dec84acda21e7',
+          ],
+          [
+            BigNumber.from(1000000 * (_amountNumber * 0.5)),
+            BigNumber.from(1000000 * (_amountNumber * 0.5)),
+          ],
+        ],
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+        true,
+        options
+      );
+    } else {
+      if (await this.checkAllowace(amount, contractAddress, donorAddress)) {
+        console.log(3);
+        return ((await this.maraScanContract()) as Contract).donate(
+          amount,
+          donationRequestId,
+          [
+            [
+              '0xf7F8DCf8962872421373FF5cf2C4bB06357b7133',
+              '0x0517417c1f98a61c8d3b1df1748dec84acda21e7',
+            ],
+            [
+              BigNumber.from(1000000 * (_amountNumber * 0.5)),
+              BigNumber.from(1000000 * (_amountNumber * 0.5)),
+            ],
+          ],
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          false
+        );
+      }
+    }
   }
 }
 

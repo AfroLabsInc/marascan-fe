@@ -81,6 +81,9 @@ export const usePaymentStore = defineStore('payment', {
      * @param payload
      */
     async createDonationRequest(payload: DonationRequestPayload) {
+      console.log(payload);
+      const auth = useAuthStore();
+      console.log(auth.donor);
       await axios
         .post(`donors/${this.getDonor.id}/donationRequests`, payload)
         .then((response) => {
