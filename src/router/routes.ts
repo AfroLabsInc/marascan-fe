@@ -5,20 +5,33 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
+      {
+        path: '',
+        name: 'index',
+        component: () => import('pages/IndexPage.vue'),
+      },
+      {
+        path: 'donor/get-started',
+        component: () => import('pages/DonorRegistration.vue'),
+      },
       {
         path: 'donor/create-account/:donorType',
         name: 'create-account',
         component: () => import('pages/CreateAccount.vue'),
       },
       {
-        path: 'donor/complete-profile/',
+        path: 'donor/complete-profile',
         name: 'complete-profile',
-        component: () => import('pages/CreateProfile.vue'),
+        component: () => import('src/pages/DonorCreateProfile.vue'),
+      },
+      {
+        path: 'donor/submit-kyc/',
+        name: 'submit-kyc',
+        component: () => import('src/pages/DonorKYC.vue'),
       },
       {
         path: 'donor/login',
-        component: () => import('src/pages/LogIn.vue'),
+        component: () => import('src/pages/LoginPage.vue'),
       },
 
       // dashboard routes

@@ -1,20 +1,20 @@
 import { providers } from 'ethers';
 import NetworkUtils from '../utils/networkUtils';
+import { checkIfWalletIsConnected } from '../utils/walletUtil';
+import { useUserStore } from '../../stores/user';
 export default class Provider {
-  provider: providers.JsonRpcProvider;
-  network: string;
+  // provider: providers.Web3Provider;
+  // network: string;
   constructor(network: string) {
-    this.network = network;
-    this.provider = new providers.JsonRpcProvider(
-      NetworkUtils.getRpcUrl(network)
-    );
+    // this.network = network;
   }
 
   getProxyAddress(): string {
     return NetworkUtils.getProxyAddress(this.network);
   }
 
-  getProvider(): providers.JsonRpcProvider {
+  async getProvider(): providers.JsonRpcProvider {
+    await checkIfWalletIsConnected();
     return this.provider;
   }
 

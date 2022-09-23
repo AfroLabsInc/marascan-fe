@@ -5,7 +5,7 @@ import {
   userGettersStore,
   userActionsStore,
 } from '../types/storeTypes';
-// import Web3 from 'web3';
+import Web3 from 'web3';
 // import { providers } from 'ethers'
 
 import { Store } from 'pinia';
@@ -400,6 +400,58 @@ async function connectMetaMask(
       // console.log(res)
       $store.account = accounts[0];
       // login
+      const data = {
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          TransferWithAuthorization: [
+            { name: 'from', type: 'address' },
+            { name: 'to', type: 'address' },
+            { name: 'value', type: 'uint256' },
+            { name: 'validAfter', type: 'uint256' },
+            { name: 'validBefore', type: 'uint256' },
+            { name: 'nonce', type: 'bytes32' },
+          ],
+        },
+        domain: {
+          name: 'USD Coin',
+          version: '2',
+          chainId: 5,
+          verifyingContract: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+        },
+        primaryType: 'TransferWithAuthorization',
+        message: {
+          from: accounts[0],
+          to: '0x7adf4b682f671b0B6Ff5dF349d4AD5671c765c7f',
+          value: 1000000,
+          validAfter: 0,
+          validBefore: 1663724992, // Valid for an hour
+          nonce:
+            '0x549f520cb05020fef5e6812a4a48d63757541eb893403e1b2bc65dd415bb2b4f',
+        },
+      };
+      const signature = await metaMaskProvider.request({
+        method: 'eth_signTypedData_v4',
+        params: [accounts[0], JSON.stringify(data)],
+      });
+      const v = '0x' + signature.slice(130, 132);
+      const r = signature.slice(0, 66);
+      const s = '0x' + signature.slice(66, 130);
+      console.log(
+        data.message.from,
+        data.message.to,
+        data.message.value,
+        data.message.validAfter,
+        data.message.validBefore,
+        data.message.nonce,
+        v,
+        r,
+        s
+      );
 
       metaMaskProvider.on('disconnect', function () {
         console.log('disconnected');

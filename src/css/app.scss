@@ -1,6 +1,280 @@
-@import './fonts';
-@import './global';
-@import './partials/continue';
-@import './partials/create_account';
-@import './partials/dashboard';
-@import './partials/utils';
+// @import './fonts';
+// @import './global';
+// @import './partials/continue';
+// @import './partials/create_account';
+// @import './partials/dashboard';
+// @import './partials/utils';
+// app global css in SCSS form
+@font-face {
+  font-family: 'Unbounded';
+  src: url(../assets/fonts/unbounded-main/TTF/Unbounded-Regular.ttf);
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Unbounded';
+  src: url(../assets/fonts/unbounded-main/TTF/Unbounded-Medium.ttf);
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Unbounded';
+  src: url(../assets/fonts/unbounded-main/TTF/Unbounded-Bold.ttf);
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Adieu';
+  src: url(../assets/fonts/adieu/Adieu-Light.c213e558.ttf);
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Adieu';
+  src: url(../assets/fonts/adieu/Adieu-Regular.ttf);
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Adieu';
+  src: url(../assets/fonts/adieu/Adieu-Bold.d23da794.ttf);
+  font-weight: 600;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Adieu';
+}
+.green-bg {
+  background-color: $green-bg;
+}
+.orange-text {
+  color: $orange-text;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+.my-page-container {
+  padding-top: 0 !important;
+}
+.page-angel {
+  padding-top: 75px !important;
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.my-btn .block {
+  font-weight: 400;
+  font-size: 13px;
+}
+
+// HERO WRAPPER
+.hero-wrapper {
+  background-image: url(../assets/images/hero.png);
+  // padding-top: 150px!important;
+  // padding-bottom: 100px;
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 85vh;
+  border-radius: 0 0 50px 50px;
+}
+#overlay {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0 0 0 / 38%);
+  border-radius: 0 0 50px 50px;
+}
+.hero-title {
+  font-family: 'Unbounded';
+  font-weight: 500;
+  font-size: 60px;
+  line-height: 70px;
+}
+.hero-desc {
+  font-family: 'Unbounded';
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: normal;
+}
+.z-index {
+  z-index: 1;
+}
+
+// ABOUT WRAPPER
+.header-border {
+  width: 30%;
+  height: 10px;
+  background-color: $primary;
+}
+.about-wrapper {
+  position: relative;
+  padding: 200px 0 !important;
+}
+.about-title {
+  font-size: 40px;
+  font-weight: 400;
+  color: #fff;
+}
+.about-desc {
+  font-size: 16px;
+  font-weight: 300;
+  color: #fff;
+}
+.about-container {
+  margin-right: calc();
+}
+.about-img {
+  position: absolute;
+  right: 0;
+}
+.overlay-image {
+  position: absolute;
+  right: 0;
+  width: 45%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// CARD WRAPPER
+.card-wrapper {
+}
+.card-title {
+  font-size: 40px;
+  font-weight: 400;
+  color: #fff;
+}
+.card-desc {
+  font-size: 16px;
+  font-weight: 300;
+  color: #fff;
+}
+
+// WRAPPER
+.wrapper-title {
+  font-size: 40px;
+  font-weight: 400;
+}
+// FOOTER
+.my-footer {
+  background-color: $footer-bg;
+}
+
+::placeholder {
+  color: #e6e6e6;
+  opacity: 1; /* Firefox */
+  font-size: 10px;
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #e6e6e6;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #e6e6e6;
+}
+
+.registration-progress-line.active {
+  height: 10px;
+  background: #b53125;
+  border-radius: 100px;
+}
+.registration-progress-line {
+  height: 10px;
+  background: #dfdfdf;
+  border-radius: 0 100px 100px 0;
+}
+.registration-progress-text.active {
+  color: #000;
+}
+.registration-progress-text {
+  color: #c9c9c9;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+  .pt-100 {
+    padding-top: 50px;
+  }
+  .pb-100 {
+    padding-bottom: 50px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 900px) {
+  .pt-100 {
+    padding-top: 50px;
+  }
+  .pb-100 {
+    padding-bottom: 50px;
+  }
+  .text-xs-center {
+    text-align: center;
+  }
+  .hero-title {
+    font-size: 30px;
+    line-height: 30px;
+  }
+  .about-wrapper {
+    padding: 50px 0 !important;
+  }
+  .about-title {
+    font-size: 30px;
+    line-height: 30px;
+  }
+  .card-title {
+    font-size: 30px;
+    line-height: 30px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+  .pt-100 {
+    padding-top: 100px;
+  }
+  .pb-100 {
+    padding-bottom: 100px;
+  }
+  .menu-text {
+    font-size: 12px;
+  }
+}

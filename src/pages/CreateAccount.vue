@@ -1,148 +1,166 @@
 <template>
-  <q-page class="create-account row items-center justify-evenly">
-    <!-- <div> -->
-    <div class="col-12 col-lg-6 col-md-6 side-form">
-      <q-form @submit="register" class="q-gutter-md">
-        <q-card class="field-section">
-          <h6 class="text-center">
-            Already have an account?
-            <router-link to="/donor/login" class="text-decoration-none">
-              Sign in</router-link
-            >
-          </h6>
-          <q-card-section>
-            <h4>Create An Account</h4>
-            <div class="row q-col-gutter-md">
-              <!-- email -->
-
-              <div class="col-12 col-md-12 col-lg-12">
-                <label class="text-subtitle2 q-mb-sm" for="fname"
-                  >Email address</label
+  <q-page class="page-angel bg-grey-2 pt-100 pb-100">
+    <section class="full-height row justify-center" style="min-height: 100vh">
+      <div class="container q-pt-lg">
+        <div class="row q-col-gutter-md">
+          <!-- <div> -->
+          <div class="col-12 col-lg-6 col-md-6">
+            <q-form @submit="register">
+              <!-- <q-card class="field-section"> -->
+              <h6 class="text-center">
+                Already have an account?
+                <router-link to="/donor/login" class="text-decoration-none">
+                  Sign in</router-link
                 >
-                <q-input
-                  outlined
-                  v-model="form.email"
-                  ref="email"
-                  lazy-rules
-                  :rules="[
-                    $rules.required('Please enter your email name'),
-                    $rules.email('Please use a valid email'),
-                  ]"
+              </h6>
+              <!-- <q-card-section> -->
+              <div class="text-h5 q-mb-lg">Create an account</div>
+              <div class="row registraion-progress q-mb-lg">
+                <div class="col-4">
+                  <div class="text-subtitle2 registration-progress-text active">
+                    1. Basic Information
+                  </div>
+                  <div class="registration-progress-line active"></div>
+                </div>
+                <div class="col-4">
+                  <div class="text-subtitle2 registration-progress-text">
+                    2. Profile Details
+                  </div>
+                  <div class="registration-progress-line"></div>
+                </div>
+                <div class="col-4">
+                  <div class="text-subtitle2 registration-progress-text">
+                    3. KYC verification
+                  </div>
+                  <div class="registration-progress-line"></div>
+                </div>
+              </div>
+              <div class="row q-col-gutter-md">
+                <!-- email -->
+
+                <div class="col-12 col-md-12 col-lg-12">
+                  <div class="q-mb-sm"><small>Email</small></div>
+                  <q-input
+                    outlined
+                    class="bg-white"
+                    v-model="form.email"
+                    ref="email"
+                    lazy-rules
+                    :rules="[
+                      $rules.required('Please enter your email name'),
+                      $rules.email('Please use a valid email'),
+                    ]"
+                  />
+                </div>
+
+                <!--password-->
+                <div class="col-12">
+                  <div class="q-mb-sm"><small>Password</small></div>
+                  <q-input
+                    outlined
+                    v-model="form.password"
+                    ref="password"
+                    class="bg-white"
+                    :type="isPwd ? 'password' : 'text'"
+                    lazy-rules
+                    :rules="[
+                      $rules.required('Please enter your password'),
+                      $rules.minLength(
+                        5,
+                        'Password should be greater than 5 characters'
+                      ),
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer"
+                        @click="isPwd = !isPwd"
+                      />
+                    </template>
+                  </q-input>
+                </div>
+                <div class="col-12">
+                  <div class="q-mb-sm"><small>Confirm Password</small></div>
+                  <q-input
+                    outlined
+                    v-model="form.confirm_password"
+                    ref="password"
+                    class="bg-white"
+                    :type="isPwd ? 'password' : 'text'"
+                    lazy-rules
+                    :rules="[
+                      $rules.required('Please enter your password'),
+                      $rules.sameAs(form.password, 'Passwords don\'t match'),
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer"
+                        @click="isPwd = !isPwd"
+                      />
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+              <div class="row justify-between items-center q-mb-md">
+                <q-checkbox
+                  :rules="[$rules.is(true, 'Please accept the license')]"
+                  class="text-grey-9"
+                  color="black"
+                  v-model="remember"
+                  >Accept Terms and Conditions</q-checkbox
+                >
+                <!-- <a href="#" class="forget-btn text-para-default"
+                    >Forget password?</a
+                  > -->
+              </div>
+
+              <div class="row">
+                <q-btn
+                  unelevated
+                  class="full-width"
+                  color="secondary"
+                  no-caps
+                  label="Sign up"
+                  :loading="submitting"
+                  type="submit"
                 />
               </div>
 
-              <!--password-->
-              <div class="col-12">
-                <label class="text-subtitle2 q-mb-sm" for="fname"
-                  >Password</label
-                >
-                <q-input
-                  outlined
-                  v-model="form.password"
-                  ref="password"
-                  :type="isPwd ? 'password' : 'text'"
-                  lazy-rules
-                  :rules="[
-                    $rules.required('Please enter your password'),
-                    $rules.minLength(
-                      5,
-                      'Password should be greater than 5 characters'
-                    ),
-                  ]"
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="isPwd = !isPwd"
+              <div class="text-center q-py-lg">
+                <fieldset class="rounded-borders">
+                  <legend>
+                    <span class="text-center q-mx-md">
+                      or continue with wallet
+                    </span>
+                  </legend>
+                  <div class="row justify-center">
+                    <q-btn
+                      unelevated
+                      text-color="white"
+                      class=""
+                      color="green"
+                      no-caps
+                      icon="account_balance_wallet"
+                      label="Connect Wallet"
+                      @click="store.openWalletModal = true"
                     />
-                  </template>
-                </q-input>
+                  </div>
+                </fieldset>
               </div>
-              <div class="col-12">
-                <label class="text-subtitle2 q-mb-sm" for="fname"
-                  >Confirm Password</label
-                >
-                <q-input
-                  outlined
-                  v-model="form.confirm_password"
-                  ref="password"
-                  :type="isPwd ? 'password' : 'text'"
-                  lazy-rules
-                  :rules="[
-                    $rules.required('Please enter your password'),
-                    $rules.sameAs(form.password, 'Passwords don\'t match'),
-                  ]"
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="isPwd = !isPwd"
-                    />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-            <div class="row justify-between items-center q-mb-md">
-              <q-checkbox
-                :rules="[$rules.is(true, 'Please accept the license')]"
-                class="text-grey-9"
-                color="black"
-                v-model="remember"
-                >Accept Terms and Conditions</q-checkbox
-              >
-              <!-- <a href="#" class="forget-btn text-para-default"
-                    >Forget password?</a
-                  > -->
-            </div>
-
-            <div class="row">
-              <q-btn
-                unelevated
-                text-color="black"
-                class="full-width"
-                color="primary"
-                no-caps
-                label="Sign up"
-                :loading="submitting"
-                type="submit"
-              />
-            </div>
-
-            <div class="text-center q-py-lg">
-              <fieldset class="rounded-borders">
-                <legend>
-                  <span class="text-center q-mx-md">
-                    or continue with wallet
-                  </span>
-                </legend>
-                <div class="row justify-center">
-                  <q-btn
-                    unelevated
-                    text-color="white"
-                    class=""
-                    color="green"
-                    no-caps
-                    icon="account_balance_wallet"
-                    label="Connect Wallet"
-                    @click="store.openWalletModal = true"
-                  />
-                </div>
-              </fieldset>
-            </div>
-          </q-card-section>
-        </q-card>
-      </q-form>
-    </div>
-    <div class="col-12 col-lg-6 col-md-6 side-png">
-      <q-img
-        src="../assets/img/pngtree.png"
-        spinner-color="primary"
-        spinner-size="82px"
-      />
-    </div>
-    <!-- </div> -->
+              <!-- </q-card-section>
+        </q-card> -->
+            </q-form>
+          </div>
+          <div class="col-12 col-lg-6 col-md-6 row justify-center">
+            <img src="../assets/img/pngtree.png" class="full-width" />
+          </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </section>
   </q-page>
 </template>
 

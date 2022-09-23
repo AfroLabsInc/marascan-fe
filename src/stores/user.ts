@@ -20,7 +20,7 @@ export const useUserStore: StoreDefinition<
     donorProfile: null,
     donorType: '',
     chainMismatch: false,
-    walletIsLoading: true,
+    walletIsLoading: false,
     account: '',
     provider: undefined,
     reciept: null,
@@ -79,7 +79,7 @@ export const useUserStore: StoreDefinition<
               this.donorProfile = response.data.data;
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
-              this.router.push({ name: 'dashboard-donor-home' });
+              this.router.push({ name: 'submit-kyc' });
             }
           })
           .catch((err) => {
@@ -162,6 +162,7 @@ export const useUserStore: StoreDefinition<
           })
           .catch(async (err) => {
             if (err.response.status === 422) {
+              console.log(err.response.data);
               console.log('calling register');
               await this.walletRegister({
                 accountAddress: payload.accountAddress,
@@ -199,15 +200,9 @@ export const useUserStore: StoreDefinition<
               ] = `Bearer ${token}`;
               auth.AUTH_SUCCESS(token);
               auth.AUTH_USER(donor);
-
-              // router.push()
             }
-            // if (response.status === 422) {
-            //   await this.walletLogin({
-            //     accountAddress: payload.accountAddress,
-            //   });
-            // }
           })
+
           .catch((err) => {
             console.log(err.response.data);
             console.log(err);
@@ -217,7 +212,9 @@ export const useUserStore: StoreDefinition<
       }
     },
     async handleLogin(): Promise<void> {
+      this.walletIsLoading = true;
       await this.walletLogin({ accountAddress: this.account });
+      this.walletIsLoading = false;
     },
   },
 });

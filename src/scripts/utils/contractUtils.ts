@@ -97,10 +97,10 @@ export default class MaraScan {
     isETHER: boolean,
     donationRequestId: number
   ): Promise<any> {
-    if (isETHER) {
+    if (isETHER || contractAddress === '') {
       // const etherAmount:BigNumber = utils.parseEther(utils.formatEther(_amountNumber))
       const options = { value: utils.parseEther('${_amountNumber}') };
-      return (
+      return await (
         (await this.maraScanContract()) as Contract
       ).SwapExactETHForTokens(
         1,

@@ -217,6 +217,49 @@
                 :rules="[$rules.required('Provide your card\'s CVV')]"
               />
             </div>
+            <div class="col-12 col-md-4 col-lg-4 col-sm-4">
+              <label class="fs-13 q-mb-lg" for="lname">CVV</label>
+              <q-input
+                id="lname"
+                class="q-mt-md"
+                outlined
+                v-model="card.cvv"
+                ref="name"
+                mask="###"
+                lazy-rules
+                :rules="[$rules.required('Provide your card\'s CVV')]"
+              />
+            </div>
+
+            <div class="col-12 col-md-4 col-lg-4 col-sm-4">
+              <label class="fs-13 q-mb-lg" for="lname">CVV</label>
+              <q-input
+                id="lname"
+                class="q-mt-md"
+                outlined
+                v-model="card.cvv"
+                ref="name"
+                mask="###"
+                lazy-rules
+                :rules="[$rules.required('Provide your card\'s CVV')]"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-12 col-lg-12">
+            <label class="text-subtitle2 q-mb-sm" for="fname">Country</label>
+            <q-input outlined v-model="card.country" ref="address" />
+          </div>
+          <div class="col-12 col-md-12 col-lg-12">
+            <label class="text-subtitle2 q-mb-sm" for="fname">City</label>
+            <q-input outlined v-model="card.line1" ref="address" />
+          </div>
+          <div class="col-12 col-md-12 col-lg-12">
+            <label class="text-subtitle2 q-mb-sm" for="fname">Address</label>
+            <q-input outlined v-model="card.line2" ref="address" />
+          </div>
+          <div class="col-12 col-md-12 col-lg-12">
+            <label class="text-subtitle2 q-mb-sm" for="fname">Address</label>
+            <q-input outlined v-model="card.district" ref="address" />
           </div>
           <div class="row justify-between items-center q-mb-md">
             <q-checkbox class="text-grey-9" color="black" v-model="rememberCard"
