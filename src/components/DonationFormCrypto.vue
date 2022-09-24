@@ -67,7 +67,9 @@
       <q-item flat class="q-mb-md q-px-none">
         <q-item-section>
           <div class="text-caption text-grey-9">Connected</div>
-          <div class="text-caption text-primary">0x051...21e7</div>
+          <div class="text-caption text-primary">
+            {{ $store.AccountFormated }}
+          </div>
         </q-item-section>
         <q-item-section avatar>
           <q-btn
@@ -179,10 +181,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, Ref } from 'vue';
+// eslint-disable @typescript-eslint/no-explicit-any
+import { ref, computed, Ref, ComputedRef } from 'vue';
 import { usePaymentStore } from '../stores/payment';
 import { useUserStore } from '../stores/user';
 import { BigNumber } from 'ethers';
+
 import {
   BeneficiaryInput,
   categoriesInConservancy,
@@ -202,7 +206,7 @@ const payment = usePaymentStore();
 
 const choseInput = ref(false);
 const loadingCryptoDonation = ref(false);
-
+const donationRequest = ref(1);
 const selectedConservancy: Ref<Conservancy | null> = ref(null);
 const selectedCategory: Ref<categoriesInConservancy | null> = ref(null);
 const $store = useUserStore();
@@ -221,6 +225,7 @@ const selectedToken = ref({
   decimal: 1000000,
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
 const filterFn = (val: any, update: any, abort: any) => {
   if (conservancies.value.length !== 0) {
     // already loaded
@@ -232,6 +237,7 @@ const filterFn = (val: any, update: any, abort: any) => {
     await payment.getAllConservancies();
   });
 };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
 const filterFnCat = (val: any, update: any, abort: any) => {
   if (allCategoriesInConservancy.value.length !== 0) {
     // already loaded
@@ -260,32 +266,41 @@ const allCategoriesInConservancy = computed(() =>
   }))
 );
 
-const beneficiaryInput: BeneficiaryInput | undefined =
-  selectedCategory.value?.beneficiaries.map((r) => [
-    r.address,
-    r.land.numOfAcres,
-  ]);
+const beneficiaryInput: ComputedRef<BeneficiaryInput | undefined> = computed(
+  () =>
+    selectedCategory.value?.beneficiaries.map((r) => [
+      r.ethereumAccountAddress,
+      r.land.numOfAcres,
+    ])
+);
 
-const totalNumberOfAcres = selectedCategory.value?.beneficiaries
-  .map((r) => r.land.numOfAcres)
-  .reduce((acc, elem) => acc + elem);
+// const donationRequest = computed(() => payment.currentDonationRequest);
+const totalNumberOfAcres = computed(() =>
+  selectedCategory.value?.beneficiaries
+    .map((r) => r.land.numOfAcres)
+    .reduce((acc, elem) => acc + elem)
+);
 
 const cryptoPayment = async () => {
   loadingCryptoDonation.value = true;
   const amount = selectedToken.value.decimal * amountCrypto.value;
-
-  const ms = new MaraScan($store);
-  if (selectedToken.value.value == 'ETH') {
+  console.log(beneficiaryInput.value);
+  const processPayment = async () => {
     await ms.makeDonation(
       amount,
       amountCrypto.value,
       selectedToken.value.contractAddress,
       $store.account,
-      beneficiaryInput as BeneficiaryInput,
-      totalNumberOfAcres as number,
+      beneficiaryInput.value as BeneficiaryInput,
+      totalNumberOfAcres.value as number,
       selectedToken.value.value == 'ETH',
-      payment.currentDonationRequest?.id as number
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      donationRequest.value
     );
+  };
+  const ms = new MaraScan($store);
+  if (selectedToken.value.value == 'ETH') {
+    await processPayment();
   } else {
     const allowance: boolean = await ms.checkAllowace(
       amount,
@@ -295,35 +310,14 @@ const cryptoPayment = async () => {
 
     if (allowance) {
       // step.value = 2;
-      await ms.makeDonation(
-        amount,
-        amountCrypto.value,
-        selectedToken.value.contractAddress,
-        $store.account,
-        beneficiaryInput as BeneficiaryInput,
-        totalNumberOfAcres as number,
-        selectedToken.value.value == 'ETH',
-        payment.currentDonationRequest?.id as number
-      );
+      await processPayment();
     } else {
       await ms
-        .approveContract(
-          BigNumber.from(amount),
-          selectedToken.value.contractAddress
-        )
+        .approveContract(amount, selectedToken.value.contractAddress)
         .then(async (res) => {
           if (res) {
             // step.value = 2;
-            await ms.makeDonation(
-              amount,
-              amountCrypto.value,
-              selectedToken.value.contractAddress,
-              $store.account,
-              beneficiaryInput as BeneficiaryInput,
-              totalNumberOfAcres as number,
-              selectedToken.value.value == 'ETH',
-              payment.currentDonationRequest?.id as number
-            );
+            await processPayment();
           }
         });
     }
@@ -393,6 +387,7 @@ const createDonationRequest = async () => {
   console.log(payload);
   await payment.createDonationRequest(payload).then(() => {
     showWindow.value = 2;
+    donationRequest.value = payment.currentDonationRequestId;
   });
   loadingProcess.value = false;
 };

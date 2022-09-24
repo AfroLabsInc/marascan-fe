@@ -11,6 +11,7 @@ import { useAuthStore } from './auth';
 export const usePaymentStore = defineStore('payment', {
   state: (): PaymentStoreState => ({
     currentDonationRequest: null,
+    currentDonationRequestId: 1,
     allCard: [],
     cardDonationStatus: null,
     currentCard: undefined,
@@ -90,6 +91,7 @@ export const usePaymentStore = defineStore('payment', {
         .post(`donors/${this.getDonor.id}/donationRequests`, payload)
         .then((response) => {
           this.currentDonationRequest = response.data.data;
+          this.currentDonationRequestId = response.data.data.id;
         })
         .catch((err) => {
           console.log(err.response.data);

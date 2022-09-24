@@ -149,6 +149,7 @@ export type Beneficiary = {
 
 export interface PaymentStoreState {
   currentDonationRequest: null | DonationRequest;
+  currentDonationRequestId: number;
   currentCard: Card | undefined;
   allCard: Card[] | [];
   isAddingCard: boolean;

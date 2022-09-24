@@ -77,10 +77,7 @@ export default class MaraScan {
     console.log(allowance);
     return BigNumber.from(amount) <= allowance || false;
   }
-  async approveContract(
-    amount: BigNumber,
-    contractAddress: string
-  ): Promise<any> {
+  async approveContract(amount: number, contractAddress: string): Promise<any> {
     const tC = (await this.tokenContract(contractAddress)) as Contract;
     const tx: TransactionResponse = await tC.approve(
       process.env.MARASCAN,
@@ -116,18 +113,22 @@ export default class MaraScan {
         options
       );
     } else {
-      if (await this.checkAllowace(amount, contractAddress, donorAddress)) {
-        console.log(3);
-        console.log(beneficiaries);
-        return ((await this.maraScanContract()) as Contract).donate(
-          amount,
-          donationRequestId,
-          beneficiaries,
-          totalNumberOfAcres,
-          '0x0000000000000000000000000000000000000000000000000000000000000000',
-          true
-        );
-      }
+      // if (await this.checkAllowace(amount, contractAddress, donorAddress)) {
+      //   console.log(3);
+      //   console.log(beneficiaries);
+      //   console.log(amount);
+      //   console.log(donationRequestId);
+      //   console.log(totalNumberOfAcres);
+      // console.log()
+      return ((await this.maraScanContract()) as Contract).donate(
+        6000000,
+        25,
+        beneficiaries,
+        3,
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+        true
+      );
+      // }
     }
   }
 }
