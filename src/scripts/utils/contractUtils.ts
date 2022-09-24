@@ -12,6 +12,7 @@ import {
   userStore,
   userGettersStore,
   userActionsStore,
+  BeneficiaryInput,
 } from '../types/storeTypes';
 import { Store } from 'pinia';
 import abi from '../abi';
@@ -66,7 +67,7 @@ export default class MaraScan {
   }
 
   async checkAllowace(
-    amount: BigNumber,
+    amount: number,
     contractAddress: string,
     addressOwner: string
   ): Promise<boolean> {
@@ -74,7 +75,7 @@ export default class MaraScan {
       (await this.tokenContract(contractAddress)) as Contract
     ).allowance(addressOwner, process.env.MARASCAN);
     console.log(allowance);
-    return amount <= allowance || false;
+    return BigNumber.from(amount) <= allowance || false;
   }
   async approveContract(
     amount: BigNumber,
@@ -90,13 +91,16 @@ export default class MaraScan {
   }
 
   async makeDonation(
-    amount: BigNumber,
+    amount: number,
     _amountNumber: number,
     contractAddress: string,
     donorAddress: string,
+    beneficiaries: BeneficiaryInput,
+    totalNumberOfAcres: number,
     isETHER: boolean,
     donationRequestId: number
   ): Promise<any> {
+    console.log(beneficiaries);
     if (isETHER || contractAddress === '') {
       // const etherAmount:BigNumber = utils.parseEther(utils.formatEther(_amountNumber))
       const options = { value: utils.parseEther('${_amountNumber}') };
@@ -105,11 +109,8 @@ export default class MaraScan {
       ).SwapExactETHForTokens(
         1,
         donationRequestId,
-        [
-          ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133', 2],
-          ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133', 2],
-        ],
-        4,
+        beneficiaries,
+        totalNumberOfAcres,
         '0x0000000000000000000000000000000000000000000000000000000000000000',
         true,
         options
@@ -117,14 +118,12 @@ export default class MaraScan {
     } else {
       if (await this.checkAllowace(amount, contractAddress, donorAddress)) {
         console.log(3);
+        console.log(beneficiaries);
         return ((await this.maraScanContract()) as Contract).donate(
           amount,
           donationRequestId,
-          [
-            ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133', 1],
-            ['0x0517417c1f98a61c8d3b1df1748dec84acda21e7', 2],
-          ],
-          3,
+          beneficiaries,
+          totalNumberOfAcres,
           '0x0000000000000000000000000000000000000000000000000000000000000000',
           true
         );

@@ -48,10 +48,5 @@ const props = defineProps({
   connectWalletConnect: { type: Function, required: true },
 });
 
-const read_more = ref(true);
-
-function toggleReadmore() {
-  read_more.value = !read_more.value;
-}
 console.log('loaded');
 </script>

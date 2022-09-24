@@ -92,6 +92,7 @@ export type DonationRequest = {
 export type DonationRequestPayload = {
   paymentMethod: string;
   categoryIds: number[];
+  conservancyId: number;
   amount: {
     currency: string;
     amount: number;
@@ -196,3 +197,6 @@ export type PaymentPayload = {
   keyId: string;
   verification: string;
 };
+
+type BeneficiaryDetails = [string, number];
+export type BeneficiaryInput = BeneficiaryDetails[];

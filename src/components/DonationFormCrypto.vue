@@ -13,8 +13,15 @@
         label="Crypto"
       />
     </div>
+    <div class="col-12" v-if="!$store.account">
+      <wallet-connect
+        :connectCoinbase="ConnectCoinBaseWallet"
+        :connectMetaMask="ConnectMetaMaskWallet"
+        :connectWalletConnect="ConnectWalletConnect"
+      />
+    </div>
     <!-- </div> -->
-    <div class="col-12">
+    <div class="col-12" v-else-if="showWindow == 1">
       <div class="column text-center q-mb-md relative-position">
         <div class="text-caption">Amount</div>
         <div
@@ -59,7 +66,7 @@
       </div>
       <q-item flat class="q-mb-md q-px-none">
         <q-item-section>
-          <div class="text-caption text-grey-6">Connected</div>
+          <div class="text-caption text-grey-9">Connected</div>
           <div class="text-caption text-primary">0x051...21e7</div>
         </q-item-section>
         <q-item-section avatar>
@@ -78,7 +85,7 @@
 
       <div class="row q-col-gutter-md">
         <div class="col-12 col-md-12 col-lg-12">
-          <div class="q-mb-sm text-grey-6">
+          <div class="q-mb-sm text-grey-10">
             <small>Select Conservancy</small>
           </div>
           <q-select
@@ -114,18 +121,59 @@
         </div>
         <div class="col-12 col-md-12 col-lg-12">
           <q-btn
-            v-close-popup
             size="md"
             style="width: 100%"
             class="my-btn q-mt-md"
             label="Proceed to pay"
             no-caps
+            :loading="loadingProcess"
+            @click="createDonationRequest"
             unelevated
             color="secondary"
           />
         </div>
-        <div class="col-12 col-md-12 col-lg-12 text-center">Step 1 of 3</div>
       </div>
+      <div class="col-12 col-md-12 col-lg-12 text-center">Step 1 of 3</div>
+    </div>
+    <div class="col-12" v-else-if="showWindow == 2">
+      <div class="column text-center q-mb-md relative-position">
+        <div class="text-center">
+          <div class="text-caption tex-grey-10">Amount</div>
+          <div class="text-subtitle">
+            {{ amountCrypto }} {{ selectedToken.value }}
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="text-caption text-grey-6">Conservancy</div>
+          : <span class="text-black">{{ selectedConservancy?.name }}</span>
+        </div>
+        <div class="text-center">
+          <div class="text-caption text-grey-6">Beneficiaries</div>
+          <div class="text-subtitle">
+            {{ selectedCategory?.title }}
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="text-caption text-grey-6">Note</div>
+          <div class="text-subtitle">
+            {{ notes }}
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-12 col-lg-12">
+        <q-btn
+          size="md"
+          style="width: 100%"
+          class="my-btn q-mt-md"
+          label="Pay"
+          no-caps
+          :loading="loadingProcess"
+          @click="cryptoPayment"
+          unelevated
+          color="secondary"
+        />
+      </div>
+      <div class="col-12 col-md-12 col-lg-12 text-center">Step 2 of 3</div>
     </div>
   </div>
 </template>
@@ -133,23 +181,39 @@
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
 import { usePaymentStore } from '../stores/payment';
+import { useUserStore } from '../stores/user';
+import { BigNumber } from 'ethers';
 import {
+  BeneficiaryInput,
   categoriesInConservancy,
   Conservancy,
 } from '../scripts/types/storeTypes';
+import {
+  connectCoinbase,
+  connectMetaMask,
+  WalletConnect,
+  WalletIsConnected,
+} from 'src/scripts/utils/walletUtil';
+
+import MaraScan from '../scripts/utils/contractUtils';
+
+// import {} from ''
 const payment = usePaymentStore();
 
-// (async () => {
-//   await payment.getAllConservancies();
-// })();
-
 const choseInput = ref(false);
+const loadingCryptoDonation = ref(false);
+
 const selectedConservancy: Ref<Conservancy | null> = ref(null);
 const selectedCategory: Ref<categoriesInConservancy | null> = ref(null);
+const $store = useUserStore();
+
 // const currencyCard = ref('USD');
 const amountCrypto = ref(0.0);
+const loadingProcess = ref(false);
 const notes = ref('');
 const terms = ref(false);
+const showWindow = ref(1);
+
 const selectedToken = ref({
   value: 'USDC',
   label: 'USDC',
@@ -169,7 +233,7 @@ const filterFn = (val: any, update: any, abort: any) => {
   });
 };
 const filterFnCat = (val: any, update: any, abort: any) => {
-  if (selectedConservancy.value !== null) {
+  if (allCategoriesInConservancy.value.length !== 0) {
     // already loaded
     update();
     return;
@@ -196,17 +260,77 @@ const allCategoriesInConservancy = computed(() =>
   }))
 );
 
-const beneficiaryInput = () =>
+const beneficiaryInput: BeneficiaryInput | undefined =
   selectedCategory.value?.beneficiaries.map((r) => [
     r.address,
     r.land.numOfAcres,
   ]);
 
-const totalNumberOfAcres = () =>
-  selectedCategory.value?.beneficiaries
-    .map((r) => r.land.numOfAcres)
-    .reduce((acc, elem) => acc + elem);
+const totalNumberOfAcres = selectedCategory.value?.beneficiaries
+  .map((r) => r.land.numOfAcres)
+  .reduce((acc, elem) => acc + elem);
 
+const cryptoPayment = async () => {
+  loadingCryptoDonation.value = true;
+  const amount = selectedToken.value.decimal * amountCrypto.value;
+
+  const ms = new MaraScan($store);
+  if (selectedToken.value.value == 'ETH') {
+    await ms.makeDonation(
+      amount,
+      amountCrypto.value,
+      selectedToken.value.contractAddress,
+      $store.account,
+      beneficiaryInput as BeneficiaryInput,
+      totalNumberOfAcres as number,
+      selectedToken.value.value == 'ETH',
+      payment.currentDonationRequest?.id as number
+    );
+  } else {
+    const allowance: boolean = await ms.checkAllowace(
+      amount,
+      selectedToken.value.contractAddress,
+      $store.account
+    );
+
+    if (allowance) {
+      // step.value = 2;
+      await ms.makeDonation(
+        amount,
+        amountCrypto.value,
+        selectedToken.value.contractAddress,
+        $store.account,
+        beneficiaryInput as BeneficiaryInput,
+        totalNumberOfAcres as number,
+        selectedToken.value.value == 'ETH',
+        payment.currentDonationRequest?.id as number
+      );
+    } else {
+      await ms
+        .approveContract(
+          BigNumber.from(amount),
+          selectedToken.value.contractAddress
+        )
+        .then(async (res) => {
+          if (res) {
+            // step.value = 2;
+            await ms.makeDonation(
+              amount,
+              amountCrypto.value,
+              selectedToken.value.contractAddress,
+              $store.account,
+              beneficiaryInput as BeneficiaryInput,
+              totalNumberOfAcres as number,
+              selectedToken.value.value == 'ETH',
+              payment.currentDonationRequest?.id as number
+            );
+          }
+        });
+    }
+  }
+};
+
+// list of approved tokens
 const approvedTokens = ref([
   { value: 'ETH', label: 'ETH', contractAddress: '' },
   {
@@ -227,5 +351,68 @@ const approvedTokens = ref([
     contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
     decimal: 1000000000000000000,
   },
+  {
+    value: 'SHIBA INU',
+    label: 'SHIBA INU',
+    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
+    decimal: 1000000000000000000,
+  },
+  {
+    value: 'DAI',
+    label: 'DAI TOKEN',
+    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
+    decimal: 1000000000000000000,
+  },
+  {
+    value: 'XRP',
+    label: 'XRP',
+    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
+    decimal: 1000000000000000000,
+  },
+  {
+    value: 'LRC',
+    label: 'LRC',
+    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
+    decimal: 1000000000000000000,
+  },
 ]);
+
+// donation request function
+const createDonationRequest = async () => {
+  loadingProcess.value = true;
+  const payload = {
+    paymentMethod: 'crypto',
+    categoryIds: [1],
+    conservancyId: selectedConservancy.value?.id as number,
+    amount: {
+      currency: selectedToken.value.value,
+      amount: Number(amountCrypto.value),
+    },
+    note: notes.value,
+  };
+  console.log(payload);
+  await payment.createDonationRequest(payload).then(() => {
+    showWindow.value = 2;
+  });
+  loadingProcess.value = false;
+};
+/**
+ * Connect WallectConnect
+ */
+const ConnectWalletConnect = () => WalletConnect($store, false);
+
+/**
+ * Connect CoinBase Wallet
+ */
+const ConnectCoinBaseWallet = () => connectCoinbase($store, false);
+
+const LoadWallet = async () => {
+  const res = await WalletIsConnected($store);
+  console.log(res);
+};
+(async () => {
+  await LoadWallet();
+})();
+
+const ConnectMetaMaskWallet = () => connectMetaMask($store, false);
 </script>

@@ -33,20 +33,20 @@
                 class="row q-col-gutter-md"
                 v-if="auth.donor.donorType == 'individual'"
               >
-                <div class="col-12 col-md-12 col-lg-12">
+                <!-- <div class="col-12 col-md-12 col-lg-12">
                   <div class="q-mb-sm"><small>Title Deed Number</small></div>
                   <q-input
                     class="bg-white"
                     v-model="detailsData.individual.deed_number"
                     outlined
                   />
-                </div>
-                <div class="col-12 col-md-12 col-lg-12">
+                </div> -->
+                <div class="col-12 col-md-6 col-lg-6">
                   <div class="q-mb-sm">
-                    <small>Picture of the Title Deed</small>
+                    <small>ID card front page</small>
                   </div>
                   <q-field
-                    v-model="detailsData.individual.deed_photo"
+                    v-model="detailsData.individual.front_id_photo"
                     ref="image"
                     dense
                     borderless
@@ -82,12 +82,12 @@
                     </q-btn>
                   </q-field>
                 </div>
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12 col-md-6 col-lg-6">
                   <div class="q-mb-sm">
-                    <small>Picture of the Title Deed</small>
+                    <small>ID card back image</small>
                   </div>
                   <q-field
-                    v-model="detailsData.individual.id_card_photo"
+                    v-model="detailsData.individual.back_id_photo"
                     ref="image"
                     dense
                     borderless
@@ -120,6 +120,36 @@
                           fill="#A9A9A9"
                         />
                       </svg>
+                    </q-btn>
+                  </q-field>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                  <div class="q-mb-sm">
+                    <small>Your Photo</small>
+                  </div>
+                  <q-field
+                    v-model="detailsData.individual.your_photo"
+                    ref="image"
+                    dense
+                    borderless
+                    hint
+                  >
+                    <input
+                      type="file"
+                      ref="files"
+                      style="display: none"
+                      @input="uploadImage"
+                      accept=".png, .jpg, .jpeg, .gif"
+                    />
+                    <q-btn
+                      style="width: 150px !important; height: 150px"
+                      @click="$refs.files.click()"
+                      text-color="grey-9"
+                      color="grey-3"
+                      unelevated
+                      outline
+                    >
+                      <q-icon name="photo_camera" />
                     </q-btn>
                   </q-field>
                 </div>
@@ -132,7 +162,7 @@
                 class="row q-col-gutter-md"
                 v-if="auth.donor.donorType == 'organization'"
               >
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12 col-md-6 col-lg-6">
                   <div class="q-mb-sm"><small>Organisation ID</small></div>
                   <q-input
                     placeholder="Share your Organisation ID"
@@ -222,7 +252,7 @@
                   </q-field>
                 </div>
 
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12 col-md-6 col-lg-6">
                   <div class="q-mb-sm"><small>Your Photo</small></div>
                   <q-field
                     v-model="detailsData.organisation.your_photo"
@@ -362,9 +392,9 @@ const updateOrCreateProfile = async () => {
 };
 let detailsData = ref({
   individual: {
-    deed_number: null,
-    deed_photo: '',
-    id_card_photo: '',
+    back_id_photo: null,
+    front_id_photo: '',
+    your_photo: '',
   },
   organisation: {
     organisation_id: null,
@@ -394,6 +424,7 @@ const submitKyc = () => {
   background: #b53125;
   border-radius: 100px 0px 0px 100px;
 }
+
 .registration-progress-line.active2 {
   height: 10px;
   background: #b53125;

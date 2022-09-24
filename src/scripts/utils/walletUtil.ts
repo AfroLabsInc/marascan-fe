@@ -319,7 +319,8 @@ const switchNetwork = async () => {
  * @returns
  */
 async function connectCoinbase(
-  $store: Store<'user', userStore, userGettersStore, userActionsStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>,
+  auth = true
 ) {
   const coinBaseProvider = CoinBaseProvider();
   console.log(coinBaseProvider);
@@ -355,7 +356,9 @@ async function connectCoinbase(
       });
       $store.provider = coinBaseProvider;
       $store.openWalletModal = false;
-      $store.handleLogin();
+      if (auth) {
+        $store.handleLogin();
+      }
       return true;
     }
     return false;
@@ -370,7 +373,8 @@ async function connectCoinbase(
  * @returns
  */
 async function connectMetaMask(
-  $store: Store<'user', userStore, userGettersStore, userActionsStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>,
+  auth = true
 ) {
   const metaMaskProvider = MetaMaskProvider();
   if (metaMaskProvider) {
@@ -418,7 +422,10 @@ async function connectMetaMask(
 
       //   $router.push('/explore');
       $store.openWalletModal = false;
-      $store.handleLogin();
+      if (auth) {
+        $store.handleLogin();
+      }
+
       return true;
     } else {
       return false;
@@ -434,7 +441,8 @@ async function connectMetaMask(
 //  * @returns
 //  */
 async function WalletConnect(
-  $store: Store<'user', userStore, userGettersStore, userActionsStore>
+  $store: Store<'user', userStore, userGettersStore, userActionsStore>,
+  auth = true
 ) {
   try {
     const provider = new WalletConnectProvider({
@@ -470,14 +478,6 @@ async function WalletConnect(
     provider.on('chainChanged', (chainId: any) => {
       window.location.reload();
     });
-    // provider.
-    // web3 = new Web3(Wallet.provider);
-    // const chain_id = await web3.eth.getChainId();
-    // if (process.env.CHAIN_ID !== `0x${chain_id}`) {
-    //   $store.commit('utils/setChainMisMatch', true);
-    //   return false;
-    // }
-    //  Get Accounts
 
     const accounts = provider.accounts;
 
@@ -489,7 +489,10 @@ async function WalletConnect(
       $store.account = accounts[0];
 
       $store.openWalletModal = false;
-      $store.handleLogin();
+      if (auth) {
+        $store.handleLogin();
+      }
+
       return true;
     }
     return false;
