@@ -145,6 +145,7 @@
                       no-caps
                       icon="account_balance_wallet"
                       label="Connect Wallet"
+                      :loading="store.LoadingWalletState"
                       @click="store.openWalletModal = true"
                     />
                   </div>

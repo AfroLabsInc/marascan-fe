@@ -106,15 +106,10 @@ export default class MaraScan {
         1,
         donationRequestId,
         [
-          [
-            '0xf7F8DCf8962872421373FF5cf2C4bB06357b7133',
-            '0x0517417c1f98a61c8d3b1df1748dec84acda21e7',
-          ],
-          [
-            BigNumber.from(1000000 * (_amountNumber * 0.5)),
-            BigNumber.from(1000000 * (_amountNumber * 0.5)),
-          ],
+          ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133', 2],
+          ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133', 2],
         ],
+        4,
         '0x0000000000000000000000000000000000000000000000000000000000000000',
         true,
         options
@@ -126,17 +121,12 @@ export default class MaraScan {
           amount,
           donationRequestId,
           [
-            [
-              '0xf7F8DCf8962872421373FF5cf2C4bB06357b7133',
-              '0x0517417c1f98a61c8d3b1df1748dec84acda21e7',
-            ],
-            [
-              BigNumber.from(1000000 * (_amountNumber * 0.5)),
-              BigNumber.from(1000000 * (_amountNumber * 0.5)),
-            ],
+            ['0xf7F8DCf8962872421373FF5cf2C4bB06357b7133', 1],
+            ['0x0517417c1f98a61c8d3b1df1748dec84acda21e7', 2],
           ],
+          3,
           '0x0000000000000000000000000000000000000000000000000000000000000000',
-          false
+          true
         );
       }
     }

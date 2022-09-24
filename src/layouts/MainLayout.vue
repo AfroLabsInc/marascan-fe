@@ -26,7 +26,7 @@
             <q-btn
               class="my-btn"
               label="Donate"
-              @click="donationFormModalShow = true"
+              to="/donor/get-started"
               no-caps
               flat
             />
@@ -82,7 +82,7 @@
                 <router-link
                   style="text-decoration: none"
                   class="text-white"
-                  to="/"
+                  to="/donor/get-started"
                   >Donate</router-link
                 >
               </div>
