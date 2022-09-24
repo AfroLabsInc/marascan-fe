@@ -16,6 +16,8 @@ export const usePaymentStore = defineStore('payment', {
     currentCard: undefined,
     isAddingCard: false,
     allDonationRequest: [],
+    allConservancies: [],
+    categoriesInConservancy: [],
   }),
 
   getters: {
@@ -120,6 +122,40 @@ export const usePaymentStore = defineStore('payment', {
         .get(`donors/${this.getDonor.id}/donationRequests`)
         .then((response) => {
           this.allDonationRequest = response.data.data;
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          console.log(err);
+        });
+    },
+
+    /**
+     * Get Conservancy
+     * @param id string
+     */
+    async getAllConservancies() {
+      await axios
+        .get('/conservancies')
+        .then((response) => {
+          console.log('john');
+          this.allConservancies = response.data.data;
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          console.log(err);
+        });
+    },
+
+    /**
+     * Get categories in conservancy
+     * @param id string - conservancy id
+     */
+    async getCategoriesInAConservancy(id: number) {
+      await axios
+        .get(`conservancies/${id}/categories`)
+        .then((response) => {
+          console.log('john');
+          this.categoriesInConservancy = response.data.data;
         })
         .catch((err) => {
           console.log(err.response.data);

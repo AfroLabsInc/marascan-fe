@@ -98,6 +98,54 @@ export type DonationRequestPayload = {
   };
   note: string;
 };
+
+export type Conservancy = {
+  id: number;
+  email: string;
+
+  ethereumAccountAddress: string;
+  name: string;
+  description: string;
+  registrationIdentification: string;
+  coverImageId: null;
+  createdAt: string;
+  updatedAt: string;
+  coverImage: null;
+};
+
+export type categoriesInConservancy = {
+  id: number;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  coverImageId: string;
+  conservancyId: string;
+  coverImage: string;
+  beneficiaries: Beneficiary[];
+};
+export type Beneficiary = {
+  id: number;
+  categoryId: number;
+  ethereumAccountAddress: string;
+  firstName: string;
+  lastName: string;
+  mobile: string;
+  email: string;
+  country: string;
+  region: string;
+  address: string;
+  updatedAt: string;
+  conservancyId: string;
+  land: {
+    beneficiaryId: number;
+    titleDeedIdentification: number;
+    titleDeedImageId: string;
+    numOfAcres: number;
+    updatedAt: string;
+  };
+};
+
 export interface PaymentStoreState {
   currentDonationRequest: null | DonationRequest;
   currentCard: Card | undefined;
@@ -105,6 +153,8 @@ export interface PaymentStoreState {
   isAddingCard: boolean;
   cardDonationStatus: any;
   allDonationRequest: DonationRequest[] | [];
+  allConservancies: Conservancy[] | [];
+  categoriesInConservancy: categoriesInConservancy[] | [];
 }
 export type Card = {
   id: string;
