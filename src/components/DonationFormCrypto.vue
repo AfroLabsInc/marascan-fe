@@ -170,12 +170,32 @@
           label="Pay"
           no-caps
           :loading="loadingProcess"
-          @click="cryptoPayment"
+          @click="cryptoPayment()"
           unelevated
           color="secondary"
         />
       </div>
       <div class="col-12 col-md-12 col-lg-12 text-center">Step 2 of 3</div>
+    </div>
+    <div class="col-12" v-else-if="showWindow == 3">
+      <div class="column text-center q-mb-md relative-position">
+        <div class="text-cente r">
+          <div class="text-h5">Donation is currently being processed</div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-12">
+          <q-btn
+            v-close-popup
+            size="md"
+            style="width: 20%"
+            class="my-btn q-mt-md"
+            label="Close"
+            no-caps
+            unelevated
+            color="secondary"
+          />
+        </div>
+        <!-- <div class="col-12 col-md-12 col-lg-12 text-center">Comp</div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -200,8 +220,7 @@ import {
 } from 'src/scripts/utils/walletUtil';
 
 import MaraScan from '../scripts/utils/contractUtils';
-
-// import {} from ''
+const $store = useUserStore();
 const payment = usePaymentStore();
 
 const choseInput = ref(false);
@@ -209,7 +228,6 @@ const loadingCryptoDonation = ref(false);
 const donationRequest = ref(1);
 const selectedConservancy: Ref<Conservancy | null> = ref(null);
 const selectedCategory: Ref<categoriesInConservancy | null> = ref(null);
-const $store = useUserStore();
 
 // const currencyCard = ref('USD');
 const amountCrypto = ref(0.0);
@@ -217,7 +235,7 @@ const loadingProcess = ref(false);
 const notes = ref('');
 const terms = ref(false);
 const showWindow = ref(1);
-
+const close_button = ref(false);
 const selectedToken = ref({
   value: 'USDC',
   label: 'USDC',
@@ -286,7 +304,7 @@ const cryptoPayment = async () => {
   const amount = selectedToken.value.decimal * amountCrypto.value;
   console.log(beneficiaryInput.value);
   const processPayment = async () => {
-    await ms.makeDonation(
+    const isProcessing = await ms.makeDonation(
       amount,
       amountCrypto.value,
       selectedToken.value.contractAddress,
@@ -295,8 +313,10 @@ const cryptoPayment = async () => {
       totalNumberOfAcres.value as number,
       selectedToken.value.value == 'ETH',
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      donationRequest.value
+      payment.currentDonationRequestId,
+      terms.value
     );
+    showWindow.value = 3;
   };
   const ms = new MaraScan($store);
   if (selectedToken.value.value == 'ETH') {
@@ -317,7 +337,7 @@ const cryptoPayment = async () => {
         .then(async (res) => {
           if (res) {
             // step.value = 2;
-            await processPayment();
+            const processingPayment = await processPayment();
           }
         });
     }

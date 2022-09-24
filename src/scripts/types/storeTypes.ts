@@ -87,6 +87,7 @@ export type DonationRequest = {
   createdAt: string;
   updatedAt: string;
   id: number;
+  [key: string]: any;
 };
 
 export type DonationRequestPayload = {
@@ -154,9 +155,10 @@ export interface PaymentStoreState {
   allCard: Card[] | [];
   isAddingCard: boolean;
   cardDonationStatus: any;
-  allDonationRequest: DonationRequest[] | [];
+  allDonorsDonationRequest: DonationRequest[] | [];
   allConservancies: Conservancy[] | [];
   categoriesInConservancy: categoriesInConservancy[] | [];
+  loadingDonor: boolean;
 }
 export type Card = {
   id: string;

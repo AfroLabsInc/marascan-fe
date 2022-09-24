@@ -95,7 +95,8 @@ export default class MaraScan {
     beneficiaries: BeneficiaryInput,
     totalNumberOfAcres: number,
     isETHER: boolean,
-    donationRequestId: number
+    donationRequestId: number,
+    isDisbursed: boolean
   ): Promise<any> {
     console.log(beneficiaries);
     if (isETHER || contractAddress === '') {
@@ -120,14 +121,16 @@ export default class MaraScan {
       //   console.log(donationRequestId);
       //   console.log(totalNumberOfAcres);
       // console.log()
-      return ((await this.maraScanContract()) as Contract).donate(
-        6000000,
-        25,
+      const tx = ((await this.maraScanContract()) as Contract).donate(
+        amount,
+        donationRequestId,
         beneficiaries,
-        3,
+        totalNumberOfAcres,
         '0x0000000000000000000000000000000000000000000000000000000000000000',
-        true
+        isDisbursed
       );
+      console.log(tx);
+      return tx;
       // }
     }
   }

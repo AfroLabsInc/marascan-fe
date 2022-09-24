@@ -11,14 +11,15 @@ import { useAuthStore } from './auth';
 export const usePaymentStore = defineStore('payment', {
   state: (): PaymentStoreState => ({
     currentDonationRequest: null,
-    currentDonationRequestId: 1,
+    currentDonationRequestId: 0,
     allCard: [],
     cardDonationStatus: null,
     currentCard: undefined,
     isAddingCard: false,
-    allDonationRequest: [],
+    allDonorsDonationRequest: [],
     allConservancies: [],
     categoriesInConservancy: [],
+    loadingDonor: false,
   }),
 
   getters: {
@@ -91,7 +92,8 @@ export const usePaymentStore = defineStore('payment', {
         .post(`donors/${this.getDonor.id}/donationRequests`, payload)
         .then((response) => {
           this.currentDonationRequest = response.data.data;
-          this.currentDonationRequestId = response.data.data.id;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.currentDonationRequestId = this.currentDonationRequest!.id;
         })
         .catch((err) => {
           console.log(err.response.data);
@@ -119,11 +121,13 @@ export const usePaymentStore = defineStore('payment', {
      * Get Donors Donations
      * @param id string
      */
-    async getAllDonorsDonationRequest() {
+    async getADonorsDonationRequest() {
       await axios
         .get(`donors/${this.getDonor.id}/donationRequests`)
         .then((response) => {
-          this.allDonationRequest = response.data.data;
+          this.allDonorsDonationRequest = response.data.data;
+          this.loadingDonor = response.data.data.length > 0;
+          console.log(response.data.data);
         })
         .catch((err) => {
           console.log(err.response.data);
