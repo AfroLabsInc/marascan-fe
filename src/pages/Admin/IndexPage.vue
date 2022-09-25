@@ -5,7 +5,7 @@
         <q-card style="border-radius: 15px" flat class="bg-black full-height">
           <q-card-section class="text-white">
             <div class="text-caption">Donations</div>
-            <div class="text-h5">0</div>
+            <div class="text-h5">{{ AllDonations.length }}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -95,7 +95,7 @@
 
 <script lang="ts" setup>
 import { usePaymentStore } from '../../stores/payment';
-import { ref, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { date } from 'quasar';
 const payment = usePaymentStore();
 
@@ -108,12 +108,11 @@ const payment = usePaymentStore();
 
 const AllDonations = computed(() => payment.allDonorsDonationRequest);
 // const  = ;
-console.log(AllDonations);
 
 const formatDate = (d: string) => date.formatDate(d, 'MMM Do, YYYY');
 </script>
 <style>
-.text-orage-custom {
+.text-orange-custom {
   color: #ee8509 !important;
 }
 td {

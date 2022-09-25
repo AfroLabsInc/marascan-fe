@@ -23,15 +23,35 @@
     <!-- </div> -->
     <div class="col-12" v-else-if="showWindow == 1">
       <div class="column text-center q-mb-md relative-position">
-        <div class="text-caption">Amount</div>
-        <div
+        <div class="text-h5 q-pb-md">Amount</div>
+        <!-- <div
           class="text-h4 text-grey-6"
           v-if="!choseInput"
           @click="choseInput = true"
         >
           {{ amountCrypto }}
+        </div> -->
+        <div class="row items-center justify-center amount">
+          <!-- <span class="fs-20">$</span> -->
+          <!-- <input
+            type="number"
+            v-model="amountCrypto"
+            class="card-input"
+            style=""
+          /> -->
+          <q-input
+            v-model="amountCrypto"
+            class="fs-18 card-input text-right"
+            style="min-width: 260px; text-align: center"
+            type="number"
+          />
+          <q-select
+            v-model="selectedToken"
+            class="q-mx-md"
+            :options="approvedTokens"
+          />
         </div>
-        <div class="text-h4 text-grey-6 flex justify-center" v-if="choseInput">
+        <!-- <div class="text-h4 text-grey-6 flex justify-center" v-if="choseInput">
           <div class="row">
             <div>
               <q-input
@@ -54,15 +74,15 @@
               />
             </div>
           </div>
-        </div>
-
+        </div> -->
+        <!--
         <q-select
           standout
           v-model="selectedToken"
           class="q-mx-md"
           :options="approvedTokens"
           rounded
-        />
+        /> -->
       </div>
       <q-item flat class="q-mb-md q-px-none">
         <q-item-section>
@@ -206,7 +226,7 @@ import { ref, computed, Ref, ComputedRef } from 'vue';
 import { usePaymentStore } from '../stores/payment';
 import { useUserStore } from '../stores/user';
 import { BigNumber } from 'ethers';
-
+import approvedToken from '../scripts/approvedTokens';
 import {
   BeneficiaryInput,
   categoriesInConservancy,
@@ -223,7 +243,6 @@ import MaraScan from '../scripts/utils/contractUtils';
 const $store = useUserStore();
 const payment = usePaymentStore();
 
-const choseInput = ref(false);
 const loadingCryptoDonation = ref(false);
 const donationRequest = ref(1);
 const selectedConservancy: Ref<Conservancy | null> = ref(null);
@@ -304,7 +323,7 @@ const cryptoPayment = async () => {
   const amount = selectedToken.value.decimal * amountCrypto.value;
   console.log(beneficiaryInput.value);
   const processPayment = async () => {
-    const isProcessing = await ms.makeDonation(
+    await ms.makeDonation(
       amount,
       amountCrypto.value,
       selectedToken.value.contractAddress,
@@ -317,6 +336,7 @@ const cryptoPayment = async () => {
       terms.value
     );
     showWindow.value = 3;
+    await payment.getADonorsDonationRequest();
   };
   const ms = new MaraScan($store);
   if (selectedToken.value.value == 'ETH') {
@@ -337,7 +357,8 @@ const cryptoPayment = async () => {
         .then(async (res) => {
           if (res) {
             // step.value = 2;
-            const processingPayment = await processPayment();
+            await processPayment();
+            // payment.getADonorsDonationRequest();
           }
         });
     }
@@ -345,51 +366,7 @@ const cryptoPayment = async () => {
 };
 
 // list of approved tokens
-const approvedTokens = ref([
-  { value: 'ETH', label: 'ETH', contractAddress: '' },
-  {
-    value: 'USDC',
-    label: 'USDC',
-    contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-    decimal: 1000000,
-  },
-  {
-    value: 'USDT',
-    label: 'USDT',
-    contractAddress: '0x509Ee0d083DdF8AC028f2a56731412edD63223B9',
-    decimal: 1000000,
-  },
-  {
-    value: 'APECOIN',
-    label: 'APECOIN',
-    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    decimal: 1000000000000000000,
-  },
-  {
-    value: 'SHIBA INU',
-    label: 'SHIBA INU',
-    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    decimal: 1000000000000000000,
-  },
-  {
-    value: 'DAI',
-    label: 'DAI TOKEN',
-    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    decimal: 1000000000000000000,
-  },
-  {
-    value: 'XRP',
-    label: 'XRP',
-    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    decimal: 1000000000000000000,
-  },
-  {
-    value: 'LRC',
-    label: 'LRC',
-    contractAddress: '0x73967c6a0904aA032C103b4104747E88c566B1A2',
-    decimal: 1000000000000000000,
-  },
-]);
+const approvedTokens = ref(approvedToken);
 
 // donation request function
 const createDonationRequest = async () => {
@@ -431,3 +408,28 @@ const LoadWallet = async () => {
 
 const ConnectMetaMaskWallet = () => connectMetaMask($store, false);
 </script>
+<style lang="scss">
+.amount {
+  .q-field__native,
+  .q-field__input {
+    text-align: center;
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0;
+    }
+  }
+}
+
+.card-input:focus {
+  outline: none;
+}
+.card-input {
+  width: 200px;
+  height: 50px;
+  font-size: 45px;
+  border: none;
+  color: #7a7676;
+  font-weight: 400;
+  /* text-align: center; */
+}
+</style>
