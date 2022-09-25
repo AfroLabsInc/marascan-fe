@@ -20,6 +20,8 @@ export const usePaymentStore = defineStore('payment', {
     allConservancies: [],
     categoriesInConservancy: [],
     loadingDonor: false,
+    allDonations: [],
+    currentDonationDetail: null,
   }),
 
   getters: {
@@ -127,7 +129,22 @@ export const usePaymentStore = defineStore('payment', {
         .then((response) => {
           this.allDonorsDonationRequest = response.data.data;
           this.loadingDonor = response.data.data.length > 0;
-          console.log(response.data.data);
+          // console.log(response.data.data);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          console.log(err);
+        });
+    },
+
+    /**
+     * Get Donations
+     */
+    async getAllDonations() {
+      await axios
+        .get('/donations')
+        .then((response) => {
+          this.allDonations = response.data.data;
         })
         .catch((err) => {
           console.log(err.response.data);
@@ -137,7 +154,6 @@ export const usePaymentStore = defineStore('payment', {
 
     /**
      * Get Conservancy
-     * @param id string
      */
     async getAllConservancies() {
       await axios
@@ -162,6 +178,18 @@ export const usePaymentStore = defineStore('payment', {
         .then((response) => {
           console.log('john');
           this.categoriesInConservancy = response.data.data;
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          console.log(err);
+        });
+    },
+
+    async getDonationDetail(id: string) {
+      axios
+        .get(`donations/${id}`)
+        .then((response) => {
+          this.currentDonationDetail = response.data.data;
         })
         .catch((err) => {
           console.log(err.response.data);

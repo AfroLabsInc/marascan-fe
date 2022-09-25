@@ -51,38 +51,6 @@
             :options="approvedTokens"
           />
         </div>
-        <!-- <div class="text-h4 text-grey-6 flex justify-center" v-if="choseInput">
-          <div class="row">
-            <div>
-              <q-input
-                outlined
-                square
-                type="number"
-                style="min-width: 40px; max-width: 100px"
-                v-model="amountCrypto"
-              />
-            </div>
-            <div>
-              <q-btn
-                @click="choseInput = false"
-                label="submit"
-                square
-                dense
-                unelevated
-                color="primary"
-                class="full-height"
-              />
-            </div>
-          </div>
-        </div> -->
-        <!--
-        <q-select
-          standout
-          v-model="selectedToken"
-          class="q-mx-md"
-          :options="approvedTokens"
-          rounded
-        /> -->
       </div>
       <q-item flat class="q-mb-md q-px-none">
         <q-item-section>
@@ -167,7 +135,7 @@
         </div>
         <div class="text-center">
           <div class="text-caption text-grey-6">Conservancy</div>
-          : <span class="text-black">{{ selectedConservancy?.name }}</span>
+          <span class="text-black">{{ selectedConservancy?.name }}</span>
         </div>
         <div class="text-center">
           <div class="text-caption text-grey-6">Beneficiaries</div>
@@ -321,7 +289,6 @@ const totalNumberOfAcres = computed(() =>
 const cryptoPayment = async () => {
   loadingCryptoDonation.value = true;
   const amount = selectedToken.value.decimal * amountCrypto.value;
-  console.log(beneficiaryInput.value);
   const processPayment = async () => {
     await ms.makeDonation(
       amount,
@@ -340,6 +307,7 @@ const cryptoPayment = async () => {
   };
   const ms = new MaraScan($store);
   if (selectedToken.value.value == 'ETH') {
+    console.log('ETH');
     await processPayment();
   } else {
     const allowance: boolean = await ms.checkAllowace(

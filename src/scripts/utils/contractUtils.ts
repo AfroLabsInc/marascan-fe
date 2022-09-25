@@ -101,7 +101,7 @@ export default class MaraScan {
     console.log(beneficiaries);
     if (isETHER || contractAddress === '') {
       // const etherAmount:BigNumber = utils.parseEther(utils.formatEther(_amountNumber))
-      const options = { value: utils.parseEther('${_amountNumber}') };
+      const options = { value: utils.parseEther(_amountNumber.toString()) };
       return await (
         (await this.maraScanContract()) as Contract
       ).SwapExactETHForTokens(
@@ -110,7 +110,7 @@ export default class MaraScan {
         beneficiaries,
         totalNumberOfAcres,
         '0x0000000000000000000000000000000000000000000000000000000000000000',
-        true,
+        isDisbursed,
         options
       );
     } else {

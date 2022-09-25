@@ -156,6 +156,8 @@ export interface PaymentStoreState {
   isAddingCard: boolean;
   cardDonationStatus: any;
   allDonorsDonationRequest: DonationRequest[] | [];
+  allDonations: DonationRequest[] | [];
+  currentDonationDetail: DonationRequest | null;
   allConservancies: Conservancy[] | [];
   categoriesInConservancy: categoriesInConservancy[] | [];
   loadingDonor: boolean;

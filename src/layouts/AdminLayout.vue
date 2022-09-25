@@ -105,12 +105,15 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+import { usePaymentStore } from '../stores/payment';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
 import DonationForm from 'src/components/DonationForm.vue';
 
 export default {
   setup() {
+    const payment = usePaymentStore();
+
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
     const $q = useQuasar();

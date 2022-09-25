@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <div class="q-pt-lg" v-show="payment.loadingDonor">
+    <q-card flat class="q-pa-md q-mt-lg" v-show="payment.loadingDonor">
       <div class="text-h5 q-my-md">My Donations</div>
       <q-markup-table flat>
         <thead>
@@ -89,7 +89,7 @@
           </tr>
         </tbody>
       </q-markup-table>
-    </div>
+    </q-card>
   </q-page>
 </template>
 
