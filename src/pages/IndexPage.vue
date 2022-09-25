@@ -4,9 +4,7 @@
       <div class="container z-index flex column items-center">
         <h1 class="text-center text-white hero-title q-mb-md">
           Towards a Sustainable Wildlife Conservation in
-          <span class="orange-text" style="background: #a1907e">
-            Masai Mara</span
-          >
+          <span class="orange-text"> Masai Mara</span>
         </h1>
         <p class="text-center text-white hero-desc">
           Our home is a precious abode, the bane of our identity. Our identity

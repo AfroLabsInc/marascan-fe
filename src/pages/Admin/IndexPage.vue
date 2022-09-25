@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <div class="" v-show="payment.loadingDonor">
+    <div class="q-pt-lg" v-show="payment.loadingDonor">
       <div class="text-h5 q-my-md">My Donations</div>
       <q-markup-table flat>
         <thead>
@@ -69,7 +69,7 @@
         </thead>
         <tbody>
           <tr v-for="(d, i) in AllDonations" :key="i">
-            <td class="text-left">{{ i }}</td>
+            <td class="text-left">{{ i + 1 }}</td>
             <td class="text-left">
               {{ d.amount.amount }} {{ d.amount.currency }}
             </td>
@@ -85,7 +85,7 @@
             >
               {{ d.paymentStatus }}
             </td>
-            <td class="text-left">{{ d.createdAt }}</td>
+            <td class="text-left">{{ formatDate(d.createdAt) }}</td>
           </tr>
         </tbody>
       </q-markup-table>
@@ -96,6 +96,7 @@
 <script lang="ts" setup>
 import { usePaymentStore } from '../../stores/payment';
 import { ref, computed } from 'vue';
+import { date } from 'quasar';
 const payment = usePaymentStore();
 
 // export default defineComponent({
@@ -109,28 +110,13 @@ const AllDonations = computed(() => payment.allDonorsDonationRequest);
 // const  = ;
 console.log(AllDonations);
 
-// return {
-//   rows,
-//   columns,
-//   payment
-//
-// }
-//  }
-// })
-
-// const hasDonations = ref(false)
-
-// export default {
-//   setup () {
-//     return {
-//       columns,
-//       rows
-//     }
-//   }
-// }
+const formatDate = (d: string) => date.formatDate(d, 'MMM Do, YYYY');
 </script>
 <style>
 .text-orage-custom {
   color: #ee8509 !important;
+}
+td {
+  color: rgba(0, 0, 0, 0.653);
 }
 </style>
