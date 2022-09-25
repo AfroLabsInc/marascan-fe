@@ -38,7 +38,7 @@
         </q-card>
       </div>
     </div>
-    <div class="row justify-center q-my-xl">
+    <div class="row justify-center q-my-xl" v-show="!payment.loadingDonor">
       <div class="col-12 col-md-6 col-lg-6">
         <div class="column justify-center items-center">
           <div class="text-h4 q-mb-lg">
@@ -56,7 +56,8 @@
     </div>
 
     <div class="" v-show="payment.loadingDonor">
-      <q-markup-table>
+      <div class="text-h5 q-my-md">My Donations</div>
+      <q-markup-table flat>
         <thead>
           <tr>
             <th class="text-left">SN</th>
