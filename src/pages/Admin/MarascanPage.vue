@@ -3,7 +3,7 @@
     <q-card flat class="q-pa-md q-mt-lg">
       <div class="row justify-between">
         <div class="text-h5 q-my-md">Marascan</div>
-        <q-input v-model="text" type="text" label="Label" />
+        <!-- <q-input v-model="text" type="text" label="Label" /> -->
       </div>
       <q-markup-table flat>
         <thead>

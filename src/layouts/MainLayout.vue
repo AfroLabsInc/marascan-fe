@@ -33,7 +33,7 @@
             <q-btn
               class="my-btn"
               label="Become a Beneficiary"
-              to="/registration"
+              to="/"
               no-caps
               flat
             />
@@ -156,7 +156,7 @@ const essentialLinks = ref([
   {
     title: 'Donate',
     icon: '',
-    link: '/',
+    link: '/donor/get-started',
   },
   {
     title: 'Become a Beneficiary',
