@@ -62,6 +62,11 @@ const routes: RouteRecordRaw[] = [
         name: 'marascan',
         component: () => import('pages/Admin/MarascanPage.vue'),
       },
+      {
+        path: 'marascan/:id',
+        name: 'DonationDetails',
+        component: () => import('pages/Admin/MarascanDetailPage.vue'),
+      },
     ],
   },
 

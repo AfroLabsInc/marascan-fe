@@ -16,24 +16,33 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(d, i) in AllDonations" :key="i">
+          <tr
+            v-for="(d, i) in AllDonations"
+            :key="i"
+            @click="
+              router.push({
+                name: 'DonationDetails',
+                params: { id: d.donation.id },
+              })
+            "
+          >
             <td class="text-left">{{ i + 1 }}</td>
             <td class="text-left">
-              {{ d.amount.amount }} {{ d.amount.currency }}
+              {{ d.donation.amount.amount }} {{ d.donation.amount.currency }}
             </td>
             <td class="text-left">Mara Siana</td>
             <td
               :class="
-                d.paymentStatus == 'paid'
+                d.donation.paymentStatus == 'paid'
                   ? 'text-green'
-                  : d.paymentStatus == 'pending'
+                  : d.donation.paymentStatus == 'pending'
                   ? 'text-orange-custom'
                   : 'text-red-3'
               "
             >
-              {{ d.paymentStatus }}
+              {{ d.donation.paymentStatus }}
             </td>
-            <td class="text-left">{{ formatDate(d.createdAt) }}</td>
+            <td class="text-left">{{ formatDate(d.donation.createdAt) }}</td>
           </tr>
         </tbody>
       </q-markup-table>
@@ -45,8 +54,9 @@
 import { usePaymentStore } from '../../stores/payment';
 import { ref, watch, computed } from 'vue';
 import { date } from 'quasar';
+import { useRouter } from 'vue-router';
 const payment = usePaymentStore();
-
+const router = useRouter();
 // export default defineComponent({
 //   name: 'IndexPage',
 //   setup() {

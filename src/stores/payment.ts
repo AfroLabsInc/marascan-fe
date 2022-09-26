@@ -189,6 +189,7 @@ export const usePaymentStore = defineStore('payment', {
       axios
         .get(`donations/${id}`)
         .then((response) => {
+          console.log(response.data);
           this.currentDonationDetail = response.data.data;
         })
         .catch((err) => {

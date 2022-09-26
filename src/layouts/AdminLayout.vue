@@ -111,6 +111,9 @@ import { useRoute } from 'vue-router';
 import DonationForm from 'src/components/DonationForm.vue';
 
 export default {
+  preFetch({ store }) {
+    const payment = usePaymentStore(store);
+  },
   setup() {
     const payment = usePaymentStore();
 
