@@ -42,7 +42,7 @@
       <div class="col-12 col-md-6 col-lg-6">
         <div class="column justify-center items-center">
           <div class="text-h4 q-mb-lg">
-            Start donating to help the maasai people
+            Start donating to save wildlife in the MaasaiMara
           </div>
           <q-btn
             color="primary"
@@ -50,6 +50,7 @@
             label="Donate"
             class="my-btn q-px-xl"
             no-caps
+            @click="donationFormModalShow == true"
           />
         </div>
       </div>
@@ -90,6 +91,10 @@
         </tbody>
       </q-markup-table>
     </q-card>
+
+    <q-dialog v-model="donationFormModalShow">
+      <DonationForm style="width: 500px" />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -98,7 +103,7 @@ import { usePaymentStore } from '../../stores/payment';
 import { ref, watch, computed } from 'vue';
 import { date } from 'quasar';
 const payment = usePaymentStore();
-
+const donationFormModalShow = ref(false);
 // export default defineComponent({
 //   name: 'IndexPage',
 //   setup() {

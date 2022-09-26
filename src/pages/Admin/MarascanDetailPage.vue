@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <!-- <q-table
+        <q-table
           hide-bottom
           flat
           :rows="rows"
@@ -97,8 +97,8 @@
               </q-td>
             </q-tr>
           </template>
-        </q-table> -->
-        <q-markup-table v-if="type == 'benefeciaries' && rows.length">
+        </q-table>
+        <!-- <q-markup-table>
           <thead>
             <tr>
               <th class="text-left">Name</th>
@@ -108,12 +108,12 @@
           </thead>
           <tbody>
             <tr for="b, i in rows" :key="i">
-              <td class="text-left">{{ b.name }}</td>
-              <td class="text-right">{{ b.amount }}</td>
-              <td class="text-right">{{ b.beneficiary }}</td>
+              <td class="text-left">{{b.name}}</td>
+              <td class="text-right">{{b.amount}}</td>
+              <td class="text-right">{{b.beneficiary}}</td>
             </tr>
           </tbody>
-        </q-markup-table>
+        </q-markup-table> -->
         <q-card flat v-if="type == 'notes'">
           <q-card-section>
             {{ currentDonationDetail.donation.note }}
