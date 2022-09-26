@@ -67,7 +67,7 @@
         <div class="row q-col-gutter-md">
           <div class="col-12 col-md-4 col-lg-4">
             <q-card class="bg-grey-3" flat square style="height: 300px">
-              <q-card-section> Tra </q-card-section>
+              <q-card-section> </q-card-section>
             </q-card>
           </div>
           <div class="col-12 col-md-4 col-lg-4">
