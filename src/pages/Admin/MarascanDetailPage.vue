@@ -196,7 +196,8 @@ export default {
         const obj = {
           name: e.firstName + ' ' + e.lastName,
           amount:
-            payment.currentDonationDetail.donation.disbursedAmount +
+            payment.currentDonationDetail.donation.amountPerBeneficiary[i]
+              .amount +
             ' ' +
             payment.currentDonationDetail.donation.amount.currency,
           beneficiary:
