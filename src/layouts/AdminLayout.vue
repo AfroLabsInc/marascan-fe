@@ -89,7 +89,7 @@
     <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
       <div class="q-pa-md">
         <div class="text-subtitle1 q-mb-md">Recent Activity</div>
-        <div class="text-caption">Come Text</div>
+        <div class="text-caption">Logged In</div>
       </div>
     </q-drawer>
 
