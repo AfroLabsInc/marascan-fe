@@ -1,12 +1,4 @@
-import {
-  BigNumber,
-  providers,
-  Contract,
-  utils,
-  Wallet,
-  ContractFactory,
-  Transaction,
-} from 'ethers';
+import { BigNumber, providers, Contract, utils, ContractFactory } from 'ethers';
 // import { checkIfWalleMSsConnected } from './wallet_util';
 import {
   userStore,
@@ -104,8 +96,7 @@ export default class MaraScan {
       const options = { value: utils.parseEther(_amountNumber.toString()) };
       return await (
         (await this.maraScanContract()) as Contract
-      ).SwapExactETHForTokens(
-        1,
+      ).SwapExactMaticForTokens(
         donationRequestId,
         beneficiaries,
         totalNumberOfAcres,
@@ -114,13 +105,6 @@ export default class MaraScan {
         options
       );
     } else {
-      // if (await this.checkAllowace(amount, contractAddress, donorAddress)) {
-      //   console.log(3);
-      //   console.log(beneficiaries);
-      //   console.log(amount);
-      //   console.log(donationRequestId);
-      //   console.log(totalNumberOfAcres);
-      // console.log()
       const tx = ((await this.maraScanContract()) as Contract).donate(
         amount,
         donationRequestId,

@@ -22,27 +22,27 @@
             @click="
               router.push({
                 name: 'DonationDetails',
-                params: { id: d.donation.id },
+                params: { id: d.id },
               })
             "
           >
             <td class="text-left">{{ i + 1 }}</td>
             <td class="text-left">
-              {{ d.donation.amount.amount }} {{ d.donation.amount.currency }}
+              {{ d.amount.amount }} {{ d.amount.currency }}
             </td>
             <td class="text-left">Mara Siana</td>
             <td
               :class="
-                d.donation.paymentStatus == 'paid'
+                d.paymentStatus == 'paid'
                   ? 'text-green'
-                  : d.donation.paymentStatus == 'pending'
+                  : d.paymentStatus == 'pending'
                   ? 'text-orange-custom'
                   : 'text-red-3'
               "
             >
-              {{ d.donation.paymentStatus }}
+              {{ d.paymentStatus }}
             </td>
-            <td class="text-left">{{ formatDate(d.donation.createdAt) }}</td>
+            <td class="text-left">{{ formatDate(d.createdAt) }}</td>
           </tr>
         </tbody>
       </q-markup-table>

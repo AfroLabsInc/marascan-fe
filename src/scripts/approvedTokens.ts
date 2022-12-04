@@ -1,9 +1,9 @@
 export default [
-  { value: 'ETH', label: 'ETH', contractAddress: '' },
+  { value: 'MATIC', label: 'MATIC', contractAddress: '' },
   {
     value: 'USDC',
     label: 'USDC',
-    contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+    contractAddress: process.env.USDC as string,
     decimal: 1000000,
   },
   {

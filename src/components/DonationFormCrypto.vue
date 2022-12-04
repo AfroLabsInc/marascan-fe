@@ -226,7 +226,7 @@ const close_button = ref(false);
 const selectedToken = ref({
   value: 'USDC',
   label: 'USDC',
-  contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+  contractAddress: process.env.USDC as string,
   decimal: 1000000,
 });
 
@@ -297,7 +297,7 @@ const cryptoPayment = async () => {
       $store.account,
       beneficiaryInput.value as BeneficiaryInput,
       totalNumberOfAcres.value as number,
-      selectedToken.value.value == 'ETH',
+      selectedToken.value.value == 'MATIC',
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       payment.currentDonationRequestId,
       terms.value
@@ -306,8 +306,7 @@ const cryptoPayment = async () => {
     await payment.getADonorsDonationRequest();
   };
   const ms = new MaraScan($store);
-  if (selectedToken.value.value == 'ETH') {
-    console.log('ETH');
+  if (selectedToken.value.value == 'MATIC') {
     await processPayment();
   } else {
     const allowance: boolean = await ms.checkAllowace(
@@ -349,13 +348,13 @@ const createDonationRequest = async () => {
     },
     note: notes.value,
   };
-  console.log(payload);
   await payment.createDonationRequest(payload).then(() => {
     showWindow.value = 2;
     donationRequest.value = payment.currentDonationRequestId;
   });
   loadingProcess.value = false;
 };
+
 /**
  * Connect WallectConnect
  */
